@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "149270589708",
+    "project_id": "bito-app",
+    "storage_bucket": "bito-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:149270589708:android:f2b00076d8cb8d1aa61929",
+        "android_client_info": {
+          "package_name": "com.example.marwan_be2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgO6-V5lo9HMFs57zmMvyRDlxSB7WaKxI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

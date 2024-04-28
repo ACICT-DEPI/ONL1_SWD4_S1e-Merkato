@@ -97,17 +97,18 @@ class _SingUpState extends State<SingUp> {
                   Center(
                     child: Image.asset(
                       'images/be2logo.png',
-                      width: MediaQuery.of(context).size.width / 3,
+                      width: MediaQuery.of(context).size.width / 2,
                       height: MediaQuery.of(context).size.height / 5,
                     ),
                   ),
+                  
                   Material(
                     elevation: 8.0,
                     borderRadius: BorderRadius.circular(20),
                     child: Container(
                       padding: EdgeInsets.only(left: 20.0, right: 20.0),
                       width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height / 1.8,
+                      height: MediaQuery.of(context).size.height / 1.7,
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20)),
@@ -228,7 +229,7 @@ class _SingUpState extends State<SingUp> {
                     ),
                   ),
                   SizedBox(
-                    height: 70.0,
+                    height: 50.0,
                   ),
                   GestureDetector(
                     onTap: () {

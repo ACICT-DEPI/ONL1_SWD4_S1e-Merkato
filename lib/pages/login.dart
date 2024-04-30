@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:marwan_be2/pages/bottomNav.dart';
+import 'package:marwan_be2/pages/forgotpassword.dart';
 import 'package:marwan_be2/pages/singin.dart';
 import 'package:marwan_be2/widget/widget_support.dart';
 
@@ -128,14 +129,20 @@ class _LogInState extends State<LogIn> {
                               ),
                             ),
                             SizedBox(height: 40.0),
-                            Container(
-                              alignment: Alignment.centerRight,
-                              child: Text(
-                                'Forget Password?',
-                                style: TextStyle(
-                                  fontFamily: 'Roboto',
-                                  fontSize: 17.0,
-                                  fontWeight: FontWeight.bold,
+                            GestureDetector(
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=> ForgotPassword()));
+                              },
+                              child: Container(
+                                alignment: Alignment.centerRight,
+                                
+                                child: Text(
+                                  'Forget Password?',
+                                  style: TextStyle(
+                                    fontFamily: 'Roboto',
+                                    fontSize: 17.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),

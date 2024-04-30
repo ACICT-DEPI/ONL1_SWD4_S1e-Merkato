@@ -81,9 +81,9 @@ class _HomeState extends State<Home> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                       Image.asset('images/classic-burger.png',height: 100.0,width:150.0, fit: BoxFit.fill,),
-                      Text(' Peef Burger', style:  Appwidget.HeadLinetextFeildStyle(),),
+                      Text(' Beef Burger', style:  Appwidget.HeadLinetextFeildStyle(),),
                       SizedBox(height: 5.0,),
-                      Text('stander peef\nburger sandwich ', style:  Appwidget.LiighttextFeildStyle(),),
+                      Text('stander beef\nburger sandwich ', style:  Appwidget.LiighttextFeildStyle(),),
                       Text("\$25",style: Appwidget.boldTextFeildStyle(),)
                                   
                                   ],),),
@@ -104,9 +104,9 @@ class _HomeState extends State<Home> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                     Image.asset('images/classic-burger.png',height: 100.0,width:150.0, fit: BoxFit.fill,),
-                    Text(' Peef Burger', style:  Appwidget.HeadLinetextFeildStyle(),),
+                    Text(' Beef Burger', style:  Appwidget.HeadLinetextFeildStyle(),),
                     SizedBox(height: 5.0,),
-                    Text('stander peef\nburger sandwich ', style:  Appwidget.LiighttextFeildStyle(),),
+                    Text('stander beef\nburger sandwich ', style:  Appwidget.LiighttextFeildStyle(),),
                     Text("\$25",style: Appwidget.boldTextFeildStyle(),)
                                 
                                 ],),),
@@ -126,7 +126,7 @@ class _HomeState extends State<Home> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                     Image.asset('images/classic-burger.png',height: 100.0,width:150.0, fit: BoxFit.fill,),
-                    Text(' Peef Burger', style:  Appwidget.HeadLinetextFeildStyle(),),
+                    Text(' Beef Burger', style:  Appwidget.HeadLinetextFeildStyle(),),
                     SizedBox(height: 5.0,),
                     Text('stander peef\nburger sandwich ', style:  Appwidget.LiighttextFeildStyle(),),
                     Text("\$25",style: Appwidget.boldTextFeildStyle(),)
@@ -168,7 +168,7 @@ class _HomeState extends State<Home> {
                      SizedBox(height: 10.0,),
                     Container(
                     width: MediaQuery.of(context).size.width/2,
-                    child: Text('Peef burger with pineaolle pieces' ,style: Appwidget.LiighttextFeildStyle(),),
+                    child: Text('Beef burger with pineaolle pieces' ,style: Appwidget.LiighttextFeildStyle(),),
                      ),
                      
                      SizedBox(height: 10.0,),

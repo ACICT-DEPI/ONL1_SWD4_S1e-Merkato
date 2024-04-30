@@ -26,6 +26,7 @@ class _SingUpState extends State<SingUp> {
   registration() async {
     if (password != null) {
       try {
+        // ignore: unused_local_variable
         UserCredential userCredential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: email, password: password);
         ScaffoldMessenger.of(context).showSnackBar((SnackBar(
@@ -35,7 +36,8 @@ class _SingUpState extends State<SingUp> {
             style: TextStyle(fontSize: 20.0),
           ),
         )));
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>BottomNav()));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => BottomNav()));
       } on FirebaseException catch (e) {
         if (e.code == 'weak password') {
           ScaffoldMessenger.of(context).showSnackBar((SnackBar(
@@ -101,7 +103,6 @@ class _SingUpState extends State<SingUp> {
                       height: MediaQuery.of(context).size.height / 5,
                     ),
                   ),
-                  
                   Material(
                     elevation: 8.0,
                     borderRadius: BorderRadius.circular(20),
@@ -136,7 +137,7 @@ class _SingUpState extends State<SingUp> {
                               controller: namecontroller,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return "pleas Enter name ";
+                                  return "Please Enter Your Name";
                                 }
                                 return null;
                               },
@@ -151,11 +152,14 @@ class _SingUpState extends State<SingUp> {
                             ),
 
                             TextFormField(
-                              // enter email massage
                               controller: emailcontroller,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return "pleas Enter E-mail ";
+                                  return "Please Enter Your E-mail";
+                                } else if (!RegExp(
+                                        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                                    .hasMatch(value)) {
+                                  return "Please Enter a valid Email";
                                 }
                                 return null;
                               },
@@ -163,6 +167,7 @@ class _SingUpState extends State<SingUp> {
                                 hintText: 'Email',
                                 hintStyle: Appwidget.SimitextFeildStyle(),
                                 prefixIcon: Icon(Icons.email_outlined),
+                            
                               ),
                             ),
                             SizedBox(
@@ -173,7 +178,9 @@ class _SingUpState extends State<SingUp> {
                               controller: passwordcontroller,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return "pleas Enter Your password";
+                                  return "Please Enter Your Password";
+                                } else if (value.length < 7) {
+                                  return "Password should be at least 7 characters";
                                 }
                                 return null;
                               },
@@ -182,8 +189,10 @@ class _SingUpState extends State<SingUp> {
                                 hintText: 'Password',
                                 hintStyle: Appwidget.SimitextFeildStyle(),
                                 prefixIcon: Icon(Icons.password_outlined),
+                                
                               ),
                             ),
+
                             SizedBox(
                               height: 50.0,
                             ),

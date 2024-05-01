@@ -24,6 +24,7 @@ class _SingUpState extends State<SingUp> {
 //
 //registration check code
   registration() async {
+    // ignore: unnecessary_null_comparison
     if (password != null) {
       try {
         // ignore: unused_local_variable

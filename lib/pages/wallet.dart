@@ -15,6 +15,7 @@ class _WalletState extends State<Wallet> {
   ////////
   ///
   ///
+
   Map<String, dynamic>? paymentIntent;
   @override
   Widget build(BuildContext context) {
@@ -170,4 +171,30 @@ class _WalletState extends State<Wallet> {
 
 //////// admin naem and type pf monye \\\\\\\\\\\\\\\
  
+
+  // Future<void> makePayment(String amount) async {
+  //   try {
+  //     paymentIntent = await createPaymentIntent(amount, 'INR');
+  //     //Payment Sheet
+  //     await Stripe.instance
+  //         .initPaymentSheet(
+  //             paymentSheetParameters: SetupPaymentSheetParameters(
+  //                 paymentIntentClientSecret: paymentIntent!['client_secret'],
+  //                 // applePay: const PaymentSheetApplePay(merchantCountryCode: '+92',),
+  //                 // googlePay: const PaymentSheetGooglePay(testEnv: true, currencyCode: "US", merchantCountryCode: "+92"),
+  //                 style: ThemeMode.dark,
+  //                 merchantDisplayName: 'Adnan'))
+  //         .then((value) {});
+
+  //     ///now finally display payment sheeet
+  //     displayPaymentSheet(amount);
+  //   } catch (e, s) {
+  //     print('exception:$e$s');
+  //   }
+  // }
+
+
+
+
+
 }

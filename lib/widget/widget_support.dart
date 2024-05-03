@@ -24,7 +24,7 @@ class Appwidget {
   static TextStyle LiighttextFeildStyle() {
     return TextStyle(
         color: Colors.black38,
-        fontSize: 17.0,
+        fontSize: 16.0,
         fontWeight: FontWeight.w500,
         );
   }
@@ -32,7 +32,7 @@ class Appwidget {
     return TextStyle(
         color: Colors.black,
         fontSize: 15.0,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.bold,
         );
   }
 }

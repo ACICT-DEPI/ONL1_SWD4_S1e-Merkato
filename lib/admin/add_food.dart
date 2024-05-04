@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:marwan_be2/firebase/database.dart';
+import 'package:marwan_be2/Database/database.dart';
 import 'package:marwan_be2/widget/widget_support.dart';
 import 'package:random_string/random_string.dart';
 

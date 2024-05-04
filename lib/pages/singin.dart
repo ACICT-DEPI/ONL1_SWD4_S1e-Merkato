@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:marwan_be2/Database/database.dart';
+import 'package:marwan_be2/Database/pref.dart';
 import 'package:marwan_be2/pages/bottomNav.dart';
 import 'package:marwan_be2/pages/login.dart';
 import 'package:marwan_be2/widget/widget_support.dart';
+import 'package:random_string/random_string.dart';
 
 class SingUp extends StatefulWidget {
   const SingUp({super.key});
@@ -37,6 +39,22 @@ class _SingUpState extends State<SingUp> {
             style: TextStyle(fontSize: 20.0),
           ),
         )));
+        String Id = randomNumeric(10);
+        Map<String, dynamic> addUserInfo = {
+          "Name": namecontroller.text,
+          "Email": emailcontroller.text,
+          "Wallet": "0",
+          "Id": Id,
+        };
+         await DatabaseMethods().addUsserDetails(addUserInfo, Id);
+        await SharedPreferenceHelper().saveUserName(namecontroller.text);
+        await SharedPreferenceHelper().saveUserEmail(emailcontroller.text);
+        await SharedPreferenceHelper().saveUserWallet('0');
+        await SharedPreferenceHelper().saveUserId(Id);
+
+
+
+
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => BottomNav()));
       } on FirebaseException catch (e) {
@@ -56,6 +74,9 @@ class _SingUpState extends State<SingUp> {
               style: TextStyle(fontSize: 20.0),
             ),
           )));
+
+
+
         }
       }
     }

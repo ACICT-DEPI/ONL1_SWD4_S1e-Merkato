@@ -1,6 +1,5 @@
 
 import 'package:flutter/material.dart';
-import 'package:marwan_be2/widget/app_constant.dart';
 import 'package:marwan_be2/widget/widget_support.dart';
 
 class Wallet extends StatefulWidget {

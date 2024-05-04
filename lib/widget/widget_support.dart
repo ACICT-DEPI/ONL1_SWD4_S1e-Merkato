@@ -24,7 +24,7 @@ class Appwidget {
   static TextStyle LiighttextFeildStyle() {
     return TextStyle(
         color: Colors.black38,
-        fontSize: 16.0,
+        fontSize: 14.0,
         fontWeight: FontWeight.w500,
         );
   }

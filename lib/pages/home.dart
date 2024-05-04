@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:marwan_be2/firebase/database.dart';
+import 'package:marwan_be2/Database/database.dart';
 import 'package:marwan_be2/pages/details.dart';
 
 import 'package:marwan_be2/widget/widget_support.dart';
@@ -29,74 +27,102 @@ class _HomeState extends State<Home> {
     ontheLoad();
     super.initState();
   }
-  
 
-  Widget allItems() {
-    return StreamBuilder(
+  Widget allItemsvertical() {
+    return Expanded(
+      child: StreamBuilder(
         stream: fooditemStream,
         builder: (context, AsyncSnapshot snapshot) {
-          return snapshot.hasData
-              ? ListView.builder(
-                  padding: EdgeInsets.zero,
-                  itemCount: snapshot.data.docs.length,
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    DocumentSnapshot ds = snapshot.data.docs[index];
+          if (snapshot.hasData) {
+            return ListView.builder(
+              padding: EdgeInsets.zero,
+              itemCount: snapshot.data.docs.length,
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              itemBuilder: (context, index) {
+                DocumentSnapshot ds = snapshot.data.docs[index];
 
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Details()),
-                        );
-                      },
-                      child: Container(
-                        margin: EdgeInsets.all(4),
-                        child: Material(
-                          elevation: 5.0,
-                          
-                          borderRadius: BorderRadius.circular(20),
-                          child: Container(
-                            padding: EdgeInsets.all(1),
-                            child: Column(
+                return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Details(detail: ds["Details"],name: ds["Name"],price: ds["Price"],image: ds["Image"],)),
+                      );
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(bottom: 9, right: 3),
+                      child: Material(
+                        elevation: 10.0,
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                          margin: EdgeInsets.all(10),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                
                                 ClipRRect(
-                                   borderRadius: BorderRadius.circular(20),
+                                  borderRadius: BorderRadius.circular(20),
                                   child: Image.network(
-                                    
                                     ds["Image"],
-                                    height: 130.0,
-                                    width: 170.0,
-                                    fit: BoxFit.fill,
+                                    height: 150.0,
+                                    width: 130.0,
+                                    fit: BoxFit.contain,
                                   ),
                                 ),
-                                Text(
-                                  ds["Name"],
-                                  style: Appwidget.boldTextFeildStyle(),
+                                Container(
+                                  margin: EdgeInsets.only(left: 15.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(height: 40,),
+                                      
+                                      Container(
+                                        
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                2,
+                                        child: Text(
+                                          
+                                          ds["Name"],
+                                          style: Appwidget
+                                              .boldTextFeildStyle(),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 10.0,
+                                      ),
+                                     
+                                      SizedBox(
+                                        height: 10.0,
+                                      ),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                2,
+                                        child: Text(
+                                          "\EGP"+ds["Price"],
+                                          style: Appwidget.HeadLinetextFeildStyle(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                SizedBox(
-                                  height: 5.0,
-                                ),
-                                Text(
-                                  ds["Details"],
-                                  style: Appwidget.LiighttextFeildStyle(),
-                                ),
-                                Text(
-                                  ds["Price"],
-                                  style: Appwidget.HeadLinetextFeildStyle(),
-                                )
                               ],
                             ),
                           ),
                         ),
                       ),
-                    );
-                  })
-              : CircularProgressIndicator();
-        });
+                    ));
+              },
+            );
+          } else {
+            return CircularProgressIndicator();
+          }
+        },
+      ),
+    );
   }
 
   @override
@@ -138,76 +164,14 @@ class _HomeState extends State<Home> {
             Container(margin: EdgeInsets.only(right: 20.0), child: showItem()),
 
             SizedBox(
-              height: 30.0,
+              height: 20.0,
             ),
 
 //////////////////////////// item adding\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-            Container(
-              
-              height: 290, child: allItems()),
 /////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-            SizedBox(
-              height: 20.0,
-            ),
 
-            //// las vages burger adding
-            Container(
-              margin: EdgeInsets.only(right: 15.0),
-              child: Material(
-                elevation: 6.0,
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  padding: EdgeInsets.all(5.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // las vages image here
-                      Image.asset(
-                        'images/classic-burger.png',
-                        height: 100.0,
-                        width: 120.0,
-                        fit: BoxFit.fill,
-                      ),
-                      SizedBox(
-                        width: 20.0,
-                      ),
-                      Column(children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: Text(
-                            'las Vages Burger',
-                            style: Appwidget.HeadLinetextFeildStyle(),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: Text(
-                            'Beef burger with pineaolle pieces',
-                            style: Appwidget.LiighttextFeildStyle(),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: Text(
-                            '\$25',
-                            style: Appwidget.boldTextFeildStyle(),
-                          ),
-                        ),
-                      ])
-                    ],
-                  ),
-                ),
-              ),
-            ),
-
-            ///
+            allItemsvertical(),
           ],
         ),
       ),
@@ -220,11 +184,12 @@ class _HomeState extends State<Home> {
       children: [
         //  burger icon adding
         GestureDetector(
-          onTap: () {
+          onTap: () async{
             Burger = true;
             Pizza = false;
             Drinks = false;
             Sauces = false;
+            fooditemStream = await DatabaseMethods().getFoodItem("Burger");
             setState(() {});
           },
           child: Material(
@@ -251,11 +216,12 @@ class _HomeState extends State<Home> {
 
         // pizza icon adding
         GestureDetector(
-          onTap: () {
+          onTap: ()async {
             Burger = false;
             Pizza = true;
             Drinks = false;
             Sauces = false;
+            fooditemStream = await DatabaseMethods().getFoodItem("Pizza");
             setState(() {});
           },
           child: Material(
@@ -281,11 +247,12 @@ class _HomeState extends State<Home> {
         ),
         // drinks icon adding
         GestureDetector(
-          onTap: () {
+          onTap: ()async {
             Burger = false;
             Pizza = false;
             Drinks = true;
             Sauces = false;
+            fooditemStream = await DatabaseMethods().getFoodItem("Drinks");
             setState(() {});
           },
           child: Material(
@@ -311,11 +278,12 @@ class _HomeState extends State<Home> {
         ),
         // sauces icon adding
         GestureDetector(
-          onTap: () {
+          onTap: () async{
             Burger = false;
             Pizza = false;
             Drinks = false;
             Sauces = true;
+            fooditemStream = await DatabaseMethods().getFoodItem("Sauces");
             setState(() {});
           },
           child: Material(

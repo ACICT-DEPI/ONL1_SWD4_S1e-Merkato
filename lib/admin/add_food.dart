@@ -19,6 +19,8 @@ class _AddFoodState extends State<AddFood> {
   TextEditingController namecontroller = TextEditingController();
   TextEditingController pricecontroller = TextEditingController();
   TextEditingController detailscontroller = TextEditingController();
+
+  ///////////////////\\\\\\\\\\\\\\\\
   final ImagePicker _picker = ImagePicker();
   File? selectedImage;
 
@@ -83,7 +85,7 @@ class _AddFoodState extends State<AddFood> {
             content: Text('Please enter the item price.'),
             actions: [
               TextButton(
-              child: Text('OK'),
+                child: Text('OK'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -182,7 +184,8 @@ class _AddFoodState extends State<AddFood> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          margin: EdgeInsets.only(left: 20.0, right: 20.0, top: 10.0, bottom: 60.0),
+          margin:
+              EdgeInsets.only(left: 20.0, right: 20.0, top: 10.0, bottom: 60.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -206,7 +209,8 @@ class _AddFoodState extends State<AddFood> {
                             width: 150,
                             height: 150,
                             decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black, width: 1.5),
+                              border:
+                                  Border.all(color: Colors.black, width: 1.5),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Icon(
@@ -216,7 +220,7 @@ class _AddFoodState extends State<AddFood> {
                           ),
                         ),
                       ),
-)
+                    )
                   : GestureDetector(
                       onTap: () {
                         getImage();
@@ -229,7 +233,8 @@ class _AddFoodState extends State<AddFood> {
                             width: 190,
                             height: 190,
                             decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black, width: .3),
+                              border:
+                                  Border.all(color: Colors.black, width: .3),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: ClipRRect(
@@ -329,7 +334,7 @@ class _AddFoodState extends State<AddFood> {
                       Icons.arrow_drop_down,
                       color: Colors.black,
                     ),
-                    value:value,
+                    value: value,
                   ),
                 ),
               ),

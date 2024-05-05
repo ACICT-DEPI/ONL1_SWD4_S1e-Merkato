@@ -1,5 +1,10 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:marwan_be2/Database/pref.dart';
+import 'package:random_string/random_string.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -9,11 +14,59 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  String? profile, name, email;
+
+  // final ImagePicker _picker = ImagePicker();
+  // File? selectedImage;
+
+  // Future getImage() async {
+  //   var image = await _picker.pickImage(source: ImageSource.gallery);
+
+  //   selectedImage = File(image!.path);
+  //   setState(() {
+  //     uploadItem()
+  //   });
+  // }
+
+  // uploadItem() async {
+  //   if (selectedImage != null) {
+  //     String addId = randomNumeric(10);
+
+  //     Reference firebaseStorageRef =
+  //         FirebaseStorage.instance.ref().child("blogImages").child(addId);
+  //     final UploadTask task = firebaseStorageRef.putFile(selectedImage!);
+
+  //     var downloadUrl = await (await task).ref.getDownloadURL();
+
+  //     await SharedPreferenceHelper().saveUserProfile(downloadUrl);
+  //     setState(() {});
+  //   }
+  // }
+
+  getthesharedpref() async {
+    profile = await SharedPreferenceHelper().getUserProfile();
+    name = await SharedPreferenceHelper().getUserName();
+    email = await SharedPreferenceHelper().getUserEmail();
+    setState(() {});
+  }
+
+  onthisload() async {
+    await getthesharedpref();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    onthisload();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-body:
- Container(
+    return Scaffold(
+      body: name == null
+          ? CircularProgressIndicator()
+          : Container(
               child: Column(
                 children: [
                   Stack(
@@ -29,36 +82,47 @@ body:
                                 bottom: Radius.elliptical(
                                     MediaQuery.of(context).size.width, 105.0))),
                       ),
-
-Center(
-                        child: Container(
-                          margin: EdgeInsets.only(
-                              top: MediaQuery.of(context).size.height / 6.5),
-                          child: Material(
-                            elevation: 10.0,
-                            borderRadius: BorderRadius.circular(60),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(60),
-                              child:Image.asset(
-                                              "images/be2logo.png",
-                                              height: 120,
-                                              width: 120,
-                                              fit: BoxFit.fill,
-                                            )
-                                             ),
-                          ),
-                        ),
-                      ),
+                      // Center(
+                      //   child: Container(
+                      //     margin: EdgeInsets.only(
+                      //         top: MediaQuery.of(context).size.height / 6.5),
+                      //     child: Material(
+                      //       elevation: 10.0,
+                      //       borderRadius: BorderRadius.circular(60),
+                      //       child: ClipRRect(
+                      //         borderRadius: BorderRadius.circular(60),
+                      //         child: selectedImage == null
+                      //             ? GestureDetector(
+                      //                 onTap: () {},
+                      //                 child: profile == null
+                      //                     ? Image.asset(
+                      //                         "images/clas.png",
+                      //                         height: 120,
+                      //                         width: 120,
+                      //                         fit: BoxFit.fill,
+                      //                       )
+                      //                     : Image.network(
+                      //                         profile!,
+                      //                         height: 120,
+                      //                         width: 120,
+                      //                         fit: BoxFit.cover,
+                      //                       ),
+                      //               )
+                      //             : Image.file(selectedImage!),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                       Padding(
-                        padding: EdgeInsets.only(top: 70.0),
+                        padding: EdgeInsets.only(top: 90.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "Marwan",
+                              "Hello "+name!,
                               style: TextStyle(
-                                color: const Color.fromARGB(255, 0, 0, 0),
-                                fontSize: 29.0,
+                                color: Color.fromARGB(255, 0, 0, 0),
+                                fontSize: 30.0,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -104,7 +168,7 @@ Center(
                                       fontWeight: FontWeight.w600),
                                 ),
                                 Text(
-                                  "name",
+                                  name!,
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 16.0,
@@ -155,7 +219,7 @@ Center(
                                       fontWeight: FontWeight.w600),
                                 ),
                                 Text(
-                                  "email",
+                                  email!,
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 16.0,
@@ -169,7 +233,7 @@ Center(
                     ),
                   ),
 
-              SizedBox(
+                  SizedBox(
                     height: 30.0,
                   ),
                   ////////////////////trems and condition\\\\\\\\\\\\\\\\\
@@ -304,4 +368,3 @@ Center(
     );
   }
 }
-

@@ -1,3 +1,4 @@
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:marwan_be2/Database/database.dart';
@@ -15,11 +16,12 @@ class SingUp extends StatefulWidget {
 }
 
 class _SingUpState extends State<SingUp> {
-  String email = "", password = "", name = "";
+  String email = "", password = "", name = "", phone = "";
 
   TextEditingController namecontroller = new TextEditingController();
   TextEditingController emailcontroller = new TextEditingController();
   TextEditingController passwordcontroller = new TextEditingController();
+  TextEditingController phonecontroller = new TextEditingController();
 
   final _formkey = GlobalKey<FormState>();
 
@@ -43,17 +45,16 @@ class _SingUpState extends State<SingUp> {
         Map<String, dynamic> addUserInfo = {
           "Name": namecontroller.text,
           "Email": emailcontroller.text,
+          "phone": phonecontroller.text,
           "Wallet": "0",
           "Id": Id,
         };
-         await DatabaseMethods().addUsserDetails(addUserInfo, Id);
+        await DatabaseMethods().addUsserDetails(addUserInfo, Id);
         await SharedPreferenceHelper().saveUserName(namecontroller.text);
         await SharedPreferenceHelper().saveUserEmail(emailcontroller.text);
+        await SharedPreferenceHelper().saveUserPhone(phonecontroller.text);
         await SharedPreferenceHelper().saveUserWallet('0');
         await SharedPreferenceHelper().saveUserId(Id);
-
-
-
 
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => BottomNav()));
@@ -74,9 +75,6 @@ class _SingUpState extends State<SingUp> {
               style: TextStyle(fontSize: 20.0),
             ),
           )));
-
-
-
         }
       }
     }
@@ -131,7 +129,7 @@ class _SingUpState extends State<SingUp> {
                     child: Container(
                       padding: EdgeInsets.only(left: 20.0, right: 20.0),
                       width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height / 1.7,
+                      height: MediaQuery.of(context).size.height / 1.64,
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20)),
@@ -143,7 +141,7 @@ class _SingUpState extends State<SingUp> {
                         child: Column(
                           children: [
                             SizedBox(
-                              height: 30.0,
+                              height: 15.0,
                             ),
 
                             Text(
@@ -151,7 +149,7 @@ class _SingUpState extends State<SingUp> {
                               style: Appwidget.boldTextFeildStyle(),
                             ),
                             SizedBox(
-                              height: 10.0,
+                              height: 15.0,
                             ),
 
 //////////////////////////////////// text fileds adding///////////////////////////////////
@@ -170,14 +168,15 @@ class _SingUpState extends State<SingUp> {
                               ),
                             ),
                             SizedBox(
-                              height: 30.0,
+                              height: 15.0,
                             ),
-
+/////////////////////////////eamil\\\\\\\\\\\\\\
                             TextFormField(
                               controller: emailcontroller,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return "Please Enter Your E-mail";
+                                  
                                 } else if (!RegExp(
                                         r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
                                     .hasMatch(value)) {
@@ -189,13 +188,45 @@ class _SingUpState extends State<SingUp> {
                                 hintText: 'Email',
                                 hintStyle: Appwidget.SimitextFeildStyle(),
                                 prefixIcon: Icon(Icons.email_outlined),
-                            
                               ),
                             ),
                             SizedBox(
-                              height: 30.0,
+                              height: 15.0,
                             ),
-
+ ////////////////////////////phone number \\\\\\\\\\\\\\                           
+                            TextFormField(
+                              controller: phonecontroller,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Please Enter Your Phone Number";
+                                } else if (value.length < 13) {
+                                  return "Please Enter a valid Phone Number";
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                hintText: 'Phone Number',
+                                hintStyle: Appwidget.SimitextFeildStyle(),
+                                prefixIcon: CountryCodePicker(
+                                  onChanged: (country) {
+                                    setState(() {
+                                      if (phonecontroller.text.length < 12) {
+                                        phonecontroller.text =
+                                            country.dialCode! +
+                                                phonecontroller.text;
+                                      }
+                                    });
+                                  },
+                                  initialSelection: 'EG',
+                                  favorite: ['+20', 'EG'],
+                                  
+                                  showCountryOnly: true,
+                                  showFlag: false,
+                                ),
+                              ),
+                            ),
+////////////////////////////////////////////password\\\\\\\\\\
+                            SizedBox(height: 15,),
                             TextFormField(
                               controller: passwordcontroller,
                               validator: (value) {
@@ -211,12 +242,11 @@ class _SingUpState extends State<SingUp> {
                                 hintText: 'Password',
                                 hintStyle: Appwidget.SimitextFeildStyle(),
                                 prefixIcon: Icon(Icons.password_outlined),
-                                
                               ),
                             ),
 
                             SizedBox(
-                              height: 50.0,
+                              height: 30.0,
                             ),
 //////////////////////////////// login botton adding///////////////////////////////////////
                             GestureDetector(

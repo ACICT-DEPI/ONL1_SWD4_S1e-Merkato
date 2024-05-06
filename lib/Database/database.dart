@@ -32,12 +32,21 @@ class DatabaseMethods {
 
   // Method to add a food item to a user's cart
   // Takes a Map of food item information and the user's ID as parameters
-  Future addFoodtoCart(Map<String, dynamic> userInfoMap, String id) async {
-     // Add the food item to the "Cart" subcollection of the user's document
-    return await FirebaseFirestore.instance
-        .collection("users")
-        .doc(id)
-        .collection("Cart")
-        .add(userInfoMap);
+ Future addFoodtoCart(Map<String, dynamic> userInfoMap, String id, int total) async {
+  // Add the total price to the userInfoMap
+  userInfoMap["total"] = total;
+
+  // Add the food item to the "Cart" subcollection of the user's document
+  return await FirebaseFirestore.instance
+      .collection("users")
+      .doc(id)
+      .collection("Cart")
+      .add(userInfoMap);
+}
+
+
+  
+  Future<Stream<QuerySnapshot>> getFoodCart(String id) async {
+    return await FirebaseFirestore.instance.collection("Users").doc(id).collection("Cart").snapshots();
   }
 }

@@ -184,53 +184,55 @@ class _DetailsState extends State<Details> {
                     ],
                   ),
 ///////////////////////////////// // add to cart code\\\\\\\\\\\\\\\\\\\\\\
-                  GestureDetector(
-                    onTap: () async {
-                      Map<String, dynamic> addFoodtoCart = {
-                        "Name": widget.name,
-                        "Quantity": a.toString(),
-                        "Total": total.toString(),
-                        "Image": widget.image,
-                      };
-                      await DatabaseMethods().addFoodtoCart(addFoodtoCart, id!);
-                      ScaffoldMessenger.of(context).showSnackBar((SnackBar(
-                        backgroundColor: Colors.orangeAccent,
-                        content: Text(
-                          "Food add to cart",
-                          style: TextStyle(fontSize: 20.0),
-                        ),
-                      )));
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                          color: Colors.orange,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Row(
-                        children: [
-                          Text(
-                            'Add to cart ',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16.0,
-                              fontFamily: 'Roboto',
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 252, 252, 252),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Icon(
-                              Icons.shopping_cart_outlined,
-                              color: const Color.fromARGB(255, 0, 0, 0),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  )
+              GestureDetector(
+  onTap: () async {
+    Map<String, dynamic> addFoodtoCart = {
+      "Name": widget.name,
+      "Quantity": a.toString(),
+      "Image": widget.image,
+    };
+
+    int total = int.parse(widget.price) * a;
+
+    await DatabaseMethods().addFoodtoCart(addFoodtoCart, id!, total);
+
+    ScaffoldMessenger.of(context).showSnackBar((SnackBar(
+      backgroundColor: Colors.orangeAccent,
+      content: Text(
+        "Food add to cart",
+        style: TextStyle(fontSize: 20.0),
+      ),
+    )));
+  },
+  child: Container(
+    padding: EdgeInsets.all(5),
+    decoration: BoxDecoration(
+        color: Colors.orange, borderRadius: BorderRadius.circular(20)),
+    child: Row(
+      children: [
+        Text(
+          'Add to cart ',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16.0,
+            fontFamily: 'Roboto',
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: Color.fromARGB(255, 252, 252, 252),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Icon(
+            Icons.shopping_cart_outlined,
+            color: const Color.fromARGB(255, 0, 0, 0),
+          ),
+        )
+      ],
+    ),
+  ),
+)
                 ],
               ),
             )

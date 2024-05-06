@@ -26,59 +26,63 @@ class _SingUpState extends State<SingUp> {
   final _formkey = GlobalKey<FormState>();
 
 //
-//registration check code
-  registration() async {
-    // ignore: unnecessary_null_comparison
-    if (password != null) {
-      try {
-        // ignore: unused_local_variable
-        UserCredential userCredential = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(email: email, password: password);
-        ScaffoldMessenger.of(context).showSnackBar((SnackBar(
-          backgroundColor: Color.fromARGB(255, 5, 5, 5),
-          content: Text(
-            "Registered successfully ",
-            style: TextStyle(fontSize: 20.0),
-          ),
-        )));
-        String Id = randomNumeric(10);
-        Map<String, dynamic> addUserInfo = {
-          "Name": namecontroller.text,
-          "Email": emailcontroller.text,
-          "phone": phonecontroller.text,
-          "Wallet": "0",
-          "Id": Id,
-        };
-        await DatabaseMethods().addUsserDetails(addUserInfo, Id);
-        await SharedPreferenceHelper().saveUserName(namecontroller.text);
-        await SharedPreferenceHelper().saveUserEmail(emailcontroller.text);
-        await SharedPreferenceHelper().saveUserPhone(phonecontroller.text);
-        await SharedPreferenceHelper().saveUserWallet('0');
-        await SharedPreferenceHelper().saveUserId(Id);
+// Update registration method to provide detailed error handling
+registration() async {
+  try {
+    UserCredential userCredential = await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(email: email, password: password);
 
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BottomNav()));
-      } on FirebaseException catch (e) {
-        if (e.code == 'weak password') {
-          ScaffoldMessenger.of(context).showSnackBar((SnackBar(
-            backgroundColor: Colors.orangeAccent,
-            content: Text(
-              "Password provied is too weak",
-              style: TextStyle(fontSize: 20.0),
-            ),
-          )));
-        } else if (e.code == "eamil is already-in-use ") {
-          ScaffoldMessenger.of(context).showSnackBar((SnackBar(
-            backgroundColor: Colors.orangeAccent,
-            content: Text(
-              "Account Already exsists",
-              style: TextStyle(fontSize: 20.0),
-            ),
-          )));
-        }
-      }
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: Color.fromARGB(255, 5, 5, 5),
+      content: Text("Registered successfully"),
+    ));
+
+    String userId = randomNumeric(10);
+    Map<String, dynamic> addUserInfo = {
+      "Name": namecontroller.text,
+      "Email": emailcontroller.text,
+      "Phone": phonecontroller.text,
+      "Wallet": "0",
+      "Id": userId,
+    };
+    await DatabaseMethods().addUsserDetails(addUserInfo, userId);
+
+    // Save user information to shared preferences
+    await SharedPreferenceHelper().saveUserName(namecontroller.text);
+    await SharedPreferenceHelper().saveUserEmail(emailcontroller.text);
+    await SharedPreferenceHelper().saveUserPhone(phonecontroller.text);
+    await SharedPreferenceHelper().saveUserWallet('0');
+    await SharedPreferenceHelper().saveUserId(userId);
+
+    // Navigate to the BottomNav page
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => BottomNav()),
+    );
+  } on FirebaseAuthException catch (e) {
+    if (e.code == 'weak-password') {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        backgroundColor: Colors.orangeAccent,
+        content: Text("Password provided is too weak"),
+      ));
+    } else if (e.code == 'email-already-in-use') {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        backgroundColor: Colors.orangeAccent,
+        content: Text("The account already exists"),
+      ));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        backgroundColor: Colors.orangeAccent,
+        content: Text("An error occurred: ${e.message}"),
+      ));
     }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: Colors.orangeAccent,
+      content: Text("An unexpected error occurred"),
+    ));
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -170,7 +174,8 @@ class _SingUpState extends State<SingUp> {
                             SizedBox(
                               height: 15.0,
                             ),
-/////////////////////////////eamil\\\\\\\\\\\\\\
+                            
+/////////////////////////////eamil\\\\\\\\\\\\\\  as
                             TextFormField(
                               controller: emailcontroller,
                               validator: (value) {

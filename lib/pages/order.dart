@@ -10,7 +10,8 @@ class Order extends StatefulWidget {
 }
 
 class _OrderState extends State<Order> {
-  late Future<Stream<QuerySnapshot>> foodStreamFuture = Future.value(Stream.empty());
+  late Future<Stream<QuerySnapshot>> foodStreamFuture =
+      Future.value(Stream.empty());
   int total = 0;
 
   @override
@@ -36,6 +37,81 @@ class _OrderState extends State<Order> {
       setState(() {
         foodStreamFuture = Future.value(Stream.empty());
       });
+    }
+  }
+
+  void handleCheckout(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Checkout Options',
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 20.0),
+                ElevatedButton(
+                  onPressed: () {
+                    // Implement logic to remove items from cart
+                    // For now, just print a message
+                    print('Removing items from cart...');
+                    Navigator.pop(context); // Close bottom sheet
+                  },
+                  child: Text('Remove Item from Cart'),
+                ),
+                SizedBox(height: 10.0),
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: 'Enter your address',
+                  ),
+                ),
+                SizedBox(height: 10.0),
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: 'Enter your phone number',
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                ElevatedButton(
+                  onPressed: () {
+                    // Implement logic to proceed with checkout
+                    print('Proceeding with checkout...');
+                    Navigator.pop(context); // Close bottom sheet
+                  },
+                  child: Text('Proceed to Checkout'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+      isScrollControlled: true, // Set to true to make the bottom sheet take up full screen height
+    );
+  }
+
+  void removeItemFromCart(String itemId) async {
+    try {
+      // Get the user ID
+      String? userId = await SharedPreferenceHelper().getUserId();
+      if (userId != null) {
+        // Remove the item from the user's cart in Firestore
+        await DatabaseMethods().removeCartItem(userId, itemId);
+        print("Item $itemId removed from cart.");
+      } else {
+        print("User ID not found.");
+      }
+    } catch (e) {
+      print("Error removing item from cart: $e");
     }
   }
 
@@ -75,7 +151,8 @@ class _OrderState extends State<Order> {
                         return Center(
                           child: Text('Error: ${snapshot.error}'),
                         );
-                      } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      } else if (!snapshot.hasData ||
+                          snapshot.data!.docs.isEmpty) {
                         return Center(
                           child: Text('No items in the cart.'),
                         );
@@ -96,6 +173,10 @@ class _OrderState extends State<Order> {
                               title: Text(ds['Name']),
                               subtitle: Text('Quantity: ${ds['Quantity']}'),
                               trailing: Text('\$${ds['total']}'),
+                              onTap: () {
+                                // Implement logic to remove item from cart
+                                removeItemFromCart(ds.id);
+                              },
                             );
                           },
                         );
@@ -114,7 +195,7 @@ class _OrderState extends State<Order> {
               children: [
                 Text(
                   "Total Price",
-                  style: Appwidget.SimitextFeildStyle(),
+                  style: Appwidget.boldTextFeildStyle(),
                 ),
                 Text(
                   "\$" + total.toString(),
@@ -122,6 +203,13 @@ class _OrderState extends State<Order> {
                 )
               ],
             ),
+          ),
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              handleCheckout(context);
+            },
+            child: Text('Checkout'),
           ),
         ],
       ),

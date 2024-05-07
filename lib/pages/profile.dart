@@ -1,13 +1,9 @@
+// ignore: unused_import
 import 'dart:io';
 
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:marwan_be2/Database/auth.dart';
 import 'package:marwan_be2/Database/pref.dart';
-import 'package:random_string/random_string.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -293,53 +289,53 @@ class _ProfileState extends State<Profile> {
                       height: 20,
                     ),
                     ///////////////////////delete account\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-                    GestureDetector(
-                       onTap: (){
-                       AuthMethods().deleteUser();
-                      },
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Material(
-                          borderRadius: BorderRadius.circular(10),
-                          elevation: 2.0,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              vertical: 15.0,
-                              horizontal: 10.0,
-                            ),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.description,
-                                  color: Colors.black,
-                                ),
-                                SizedBox(
-                                  width: 20.0,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Delete Account",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 20.0,
-                                          fontWeight: FontWeight.w600),
-                                    )
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
+                    // GestureDetector(
+                    //    onTap: (){
+                    //    AuthMethods().deleteUser();
+                    //   },
+                    //   child: Container(
+                    //     margin: EdgeInsets.symmetric(horizontal: 20.0),
+                    //     child: Material(
+                    //       borderRadius: BorderRadius.circular(10),
+                    //       elevation: 2.0,
+                    //       child: Container(
+                    //         padding: EdgeInsets.symmetric(
+                    //           vertical: 15.0,
+                    //           horizontal: 10.0,
+                    //         ),
+                    //         decoration: BoxDecoration(
+                    //             color: Colors.white,
+                    //             borderRadius: BorderRadius.circular(10)),
+                    //         child: Row(
+                    //           children: [
+                    //             Icon(
+                    //               Icons.description,
+                    //               color: Colors.black,
+                    //             ),
+                    //             SizedBox(
+                    //               width: 20.0,
+                    //             ),
+                    //             Column(
+                    //               crossAxisAlignment: CrossAxisAlignment.start,
+                    //               children: [
+                    //                 Text(
+                    //                   "Delete Account",
+                    //                   style: TextStyle(
+                    //                       color: Colors.black,
+                    //                       fontSize: 20.0,
+                    //                       fontWeight: FontWeight.w600),
+                    //                 )
+                    //               ],
+                    //             )
+                    //           ],
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    // SizedBox(
+                    //   height: 20,
+                    // ),
 ////////////////////////////////////\\\\\\\\\\\\\\\\\\\
                         Container(
                       margin: EdgeInsets.symmetric(horizontal: 20.0),

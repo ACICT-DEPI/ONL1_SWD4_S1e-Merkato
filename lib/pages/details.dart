@@ -29,7 +29,9 @@ class _DetailsState extends State<Details> {
 
   Future<void> getSharedPref() async {
     userId = await SharedPreferenceHelper().getUserId();
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> addToCart() async {
@@ -45,31 +47,35 @@ class _DetailsState extends State<Details> {
 
         await DatabaseMethods().addFoodToCart(cartItem, userId!);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.orangeAccent,
-            duration: Duration(seconds: 1),
-
-            content: Text("item added to cart",style: Appwidget.HeadLinetextFeildStyle(),),
-          ),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.orangeAccent,
+              duration: Duration(seconds: 1),
+              content: Text("Item added to cart", style: Appwidget.HeadLinetextFeildStyle()),
+            ),
+          );
+        }
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.red,
-            
-            content: Text("Failed to add food to cart"),
-          ),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.red,
+              content: Text("Failed to add food to cart"),
+            ),
+          );
+        }
         print("Error adding food to cart: $e");
       }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.red,
-          content: Text("User ID not found"),
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            content: Text("User ID not found"),
+          ),
+        );
+      }
     }
   }
 

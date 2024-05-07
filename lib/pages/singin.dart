@@ -45,7 +45,7 @@ registration() async {
       "Wallet": "0",
       "Id": userId,
     };
-    await DatabaseMethods().addUsserDetails(addUserInfo, userId);
+    await DatabaseMethods().addUserDetails(addUserInfo, userId);
 
     // Save user information to shared preferences
     await SharedPreferenceHelper().saveUserName(namecontroller.text);

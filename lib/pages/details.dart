@@ -3,69 +3,100 @@ import 'package:marwan_be2/Database/database.dart';
 import 'package:marwan_be2/Database/pref.dart';
 import 'package:marwan_be2/widget/widget_support.dart';
 
-// ignore: must_be_immutable
 class Details extends StatefulWidget {
-  String image, name, detail, price;
-  Details(
-      {required this.detail,
-      required this.image,
-      required this.name,
-      required this.price});
+  final String image, name, detail, price;
+
+  const Details({
+    required this.detail,
+    required this.image,
+    required this.name,
+    required this.price,
+  });
 
   @override
   State<Details> createState() => _DetailsState();
 }
 
 class _DetailsState extends State<Details> {
-  int a = 1, total = 0;
-  String? id;
-
-  getthesharedpref() async {
-    id = await SharedPreferenceHelper().getUserId();
-    setState(() {});
-  }
-
-  ontheload() async {
-    await getthesharedpref();
-    setState(() {});
-  }
+  int quantity = 1;
+  late String? userId;
 
   @override
   void initState() {
     super.initState();
-    ontheload();
-    total = int.parse(widget.price);
+    getSharedPref();
+  }
+
+  Future<void> getSharedPref() async {
+    userId = await SharedPreferenceHelper().getUserId();
+    setState(() {});
+  }
+
+  Future<void> addToCart() async {
+    if (userId != null) {
+      try {
+        int totalPrice = int.parse(widget.price) * quantity;
+        Map<String, dynamic> cartItem = {
+          "Name": widget.name,
+          "Quantity": quantity.toString(),
+          "Image": widget.image,
+          "Total": totalPrice,
+        };
+
+        await DatabaseMethods().addFoodToCart(cartItem, userId!);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.orangeAccent,
+            duration: Duration(seconds: 1),
+
+            content: Text("item added to cart",style: Appwidget.HeadLinetextFeildStyle(),),
+          ),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            
+            content: Text("Failed to add food to cart"),
+          ),
+        );
+        print("Error adding food to cart: $e");
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text("User ID not found"),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        margin: EdgeInsets.only(
-          top: 50.0,
-          left: 10,
-          right: 20.0,
-        ),
+        margin: EdgeInsets.only(top: 50.0, left: 10, right: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Icon(
-                  Icons.arrow_back_ios_new_outlined,
-                  color: Colors.black,
-                )),
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Icon(
+                Icons.arrow_back_ios_new_outlined,
+                color: Colors.black,
+              ),
+            ),
             SizedBox(height: 10.0),
-/////////////////////////////////// image \\\\\\\\\\\\\\\\\\\\\\\
             Image.network(
               widget.image,
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height / 2.5,
               fit: BoxFit.contain,
             ),
-            /////////////////////name\\\\\\\\\\\\\\\\\\
             SizedBox(height: 20.0),
             Row(
               children: [
@@ -79,20 +110,19 @@ class _DetailsState extends State<Details> {
                   ],
                 ),
                 Spacer(),
-                ///////////////////////total price calac (for subtract counter) \\\\\\\\\\\\
                 GestureDetector(
                   onTap: () {
-                    if (a > 0) {
-                      --a;
-                      total = total - int.parse(widget.price);
+                    if (quantity > 1) {
+                      setState(() {
+                        quantity--;
+                      });
                     }
-
-                    setState(() {});
                   },
                   child: Container(
                     decoration: BoxDecoration(
-                        color: Colors.orange,
-                        borderRadius: BorderRadius.circular(20)),
+                      color: Colors.orange,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                     child: Icon(
                       Icons.remove,
                       color: Colors.white,
@@ -100,27 +130,23 @@ class _DetailsState extends State<Details> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  width: 15.0,
-                ),
+                SizedBox(width: 15.0),
                 Text(
-                  a.toString(),
+                  quantity.toString(),
                   style: Appwidget.HeadLinetextFeildStyle(),
                 ),
-                SizedBox(
-                  width: 15.0,
-                ),
-                ///////////////////////total price calac (for add counter) \\\\\\\\\\\\
+                SizedBox(width: 15.0),
                 GestureDetector(
                   onTap: () {
-                    ++a;
-                    total = total + int.parse(widget.price);
-                    setState(() {});
+                    setState(() {
+                      quantity++;
+                    });
                   },
                   child: Container(
                     decoration: BoxDecoration(
-                        color: Colors.orange,
-                        borderRadius: BorderRadius.circular(20)),
+                      color: Colors.orange,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                     child: Icon(
                       Icons.add,
                       color: Colors.white,
@@ -130,33 +156,24 @@ class _DetailsState extends State<Details> {
                 )
               ],
             ),
-            ///////////////// Details\\\\\\\\\\\\\\\\
-            SizedBox(
-              height: 20.0,
-            ),
+            SizedBox(height: 20.0),
             Text(
               widget.detail,
               style: Appwidget.HeadLinetextFeildStyle(),
             ),
-            SizedBox(
-              height: 20.0,
-            ),
+            SizedBox(height: 20.0),
             Row(
               children: [
                 Text(
-                  'Cooking Tiem',
+                  'Cooking Time',
                   style: Appwidget.HeadLinetextFeildStyle(),
                 ),
-                SizedBox(
-                  width: 10.0,
-                ),
+                SizedBox(width: 10.0),
                 Icon(
                   Icons.alarm,
                   color: Colors.orange,
                 ),
-                SizedBox(
-                  width: 10.0,
-                ),
+                SizedBox(width: 10.0),
                 Text(
                   '20 Min',
                   style: Appwidget.HeadLinetextFeildStyle(),
@@ -176,63 +193,45 @@ class _DetailsState extends State<Details> {
                         'Total Price',
                         style: Appwidget.SimitextFeildStyle(),
                       ),
-                      //////////////////////price\\\\\\\\\\\\\\\\\\
                       Text(
-                        '\EGP' + total.toString(),
+                        '\EGP' + (int.parse(widget.price) * quantity).toString(),
                         style: Appwidget.HeadLinetextFeildStyle(),
                       ),
                     ],
                   ),
-///////////////////////////////// // add to cart code\\\\\\\\\\\\\\\\\\\\\\
-              GestureDetector(
-  onTap: () async {
-    Map<String, dynamic> addFoodtoCart = {
-      "Name": widget.name,
-      "Quantity": a.toString(),
-      "Image": widget.image,
-    };
-
-    int total = int.parse(widget.price) * a;
-
-    await DatabaseMethods().addFoodtoCart(addFoodtoCart, id!, total);
-
-    ScaffoldMessenger.of(context).showSnackBar((SnackBar(
-      backgroundColor: Colors.orangeAccent,
-      content: Text(
-        "Food add to cart",
-        style: TextStyle(fontSize: 20.0),
-      ),
-    )));
-  },
-  child: Container(
-    padding: EdgeInsets.all(5),
-    decoration: BoxDecoration(
-        color: Colors.orange, borderRadius: BorderRadius.circular(20)),
-    child: Row(
-      children: [
-        Text(
-          'Add to cart ',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16.0,
-            fontFamily: 'Roboto',
-          ),
-        ),
-        Container(
-          padding: EdgeInsets.all(6),
-          decoration: BoxDecoration(
-            color: Color.fromARGB(255, 252, 252, 252),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Icon(
-            Icons.shopping_cart_outlined,
-            color: const Color.fromARGB(255, 0, 0, 0),
-          ),
-        )
-      ],
-    ),
-  ),
-)
+                  GestureDetector(
+                    onTap: addToCart,
+                    child: Container(
+                      padding: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: Colors.orange,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        children: [
+                          Text(
+                            'Add to cart ',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.0,
+                              fontFamily: 'Roboto',
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Color.fromARGB(255, 252, 252, 252),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Icon(
+                              Icons.shopping_cart_outlined,
+                              color: const Color.fromARGB(255, 0, 0, 0),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  )
                 ],
               ),
             )

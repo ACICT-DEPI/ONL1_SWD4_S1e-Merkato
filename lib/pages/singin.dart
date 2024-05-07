@@ -25,294 +25,283 @@ class _SingUpState extends State<SingUp> {
 
   final _formkey = GlobalKey<FormState>();
 
-//
-// Update registration method to provide detailed error handling
-registration() async {
-  try {
-    // ignore: unused_local_variable
-    UserCredential userCredential = await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(email: email, password: password);
+  registration() async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
 
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      backgroundColor: Color.fromARGB(255, 5, 5, 5),
-      content: Text("Registered successfully"),
-    ));
-
-    String userId = randomNumeric(10);
-    Map<String, dynamic> addUserInfo = {
-      "Name": namecontroller.text,
-      "Email": emailcontroller.text,
-      "Phone": phonecontroller.text,
-      "Wallet": "0",
-      "Id": userId,
-    };
-    await DatabaseMethods().addUserDetails(addUserInfo, userId);
-
-    // Save user information to shared preferences
-    await SharedPreferenceHelper().saveUserName(namecontroller.text);
-    await SharedPreferenceHelper().saveUserEmail(emailcontroller.text);
-    await SharedPreferenceHelper().saveUserPhone(phonecontroller.text);
-    await SharedPreferenceHelper().saveUserWallet('0');
-    await SharedPreferenceHelper().saveUserId(userId);
-
-    // Navigate to the BottomNav page
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => BottomNav()),
-    );
-  } on FirebaseAuthException catch (e) {
-    if (e.code == 'weak-password') {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: Colors.orangeAccent,
-        content: Text("Password provided is too weak"),
+        backgroundColor: Color.fromARGB(255, 5, 5, 5),
+        content: Text("Registered successfully"),
       ));
-    } else if (e.code == 'email-already-in-use') {
+
+      String userId = randomNumeric(10);
+      Map<String, dynamic> addUserInfo = {
+        "Name": namecontroller.text,
+        "Email": emailcontroller.text,
+        "Phone": phonecontroller.text,
+        "Wallet": "0",
+        "Id": userId,
+      };
+      await DatabaseMethods().addUserDetails(addUserInfo, userId);
+
+      await SharedPreferenceHelper().saveUserName(namecontroller.text);
+      await SharedPreferenceHelper().saveUserEmail(emailcontroller.text);
+      await SharedPreferenceHelper().saveUserPhone(phonecontroller.text);
+      await SharedPreferenceHelper().saveUserWallet('0');
+      await SharedPreferenceHelper().saveUserId(userId);
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => BottomNav()),
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          backgroundColor: Colors.orangeAccent,
+          content: Text("Password provided is too weak"),
+        ));
+      } else if (e.code == 'email-already-in-use') {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          backgroundColor: Colors.orangeAccent,
+          content: Text("The account already exists"),
+        ));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          backgroundColor: Colors.orangeAccent,
+          content: Text("An error occurred: ${e.message}"),
+        ));
+      }
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         backgroundColor: Colors.orangeAccent,
-        content: Text("The account already exists"),
-      ));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: Colors.orangeAccent,
-        content: Text("An error occurred: ${e.message}"),
+        content: Text("An unexpected error occurred"),
       ));
     }
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      backgroundColor: Colors.orangeAccent,
-      content: Text("An unexpected error occurred"),
-    ));
   }
-}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // sing in icons
       body: SingleChildScrollView(
         child: Container(
-            child: Stack(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height / 2.5,
-              decoration: BoxDecoration(
+          child: Stack(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height / 2.5,
+                decoration: BoxDecoration(
                   gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                    Color.fromARGB(188, 255, 102, 0),
-                    Color.fromARGB(235, 245, 139, 0),
-                  ])),
-            ),
-            Container(
-              margin:
-                  EdgeInsets.only(top: MediaQuery.of(context).size.height / 3),
-              height: MediaQuery.of(context).size.height / 2,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(40),
-                    topRight: Radius.circular(40)),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.only(top: 25.0, right: 30.0, left: 30.0),
-              child: Column(
-                children: [
-                  Center(
-                    child: Image.asset(
-                      'images/be2logo.png',
-                      width: MediaQuery.of(context).size.width / 2,
-                      height: MediaQuery.of(context).size.height / 5,
-                    ),
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color.fromARGB(188, 255, 102, 0),
+                      Color.fromARGB(235, 245, 139, 0),
+                    ],
                   ),
-                  Material(
-                    elevation: 8.0,
-                    borderRadius: BorderRadius.circular(20),
-                    child: Container(
-                      padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height / 1.64,
-                      decoration: BoxDecoration(
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height / 3),
+                height: MediaQuery.of(context).size.height / 2,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(40),
+                    topRight: Radius.circular(40),
+                  ),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.only(top: 25.0, right: 30.0, left: 30.0),
+                child: Column(
+                  children: [
+                    Center(
+                      child: Image.asset(
+                        'images/be2logo.png',
+                        width: MediaQuery.of(context).size.width / 2,
+                        height: MediaQuery.of(context).size.height / 5,
+                      ),
+                    ),
+                    Material(
+                      elevation: 8.0,
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        padding: EdgeInsets.only(left: 20.0, right: 20.0),
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height / 1.64,
+                        decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(20)),
-                      //
-/////////////////////////////////// singin textfeild//////////////////////////////
-
-                      child: Form(
-                        key: _formkey,
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: 15.0,
-                            ),
-
-                            Text(
-                              'Sing UP',
-                              style: Appwidget.boldTextFeildStyle(),
-                            ),
-                            SizedBox(
-                              height: 15.0,
-                            ),
-
-//////////////////////////////////// text fileds adding///////////////////////////////////
-                            TextFormField(
-                              controller: namecontroller,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return "Please Enter Your Name";
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                hintText: 'Name',
-                                hintStyle: Appwidget.SimitextFeildStyle(),
-                                prefixIcon: Icon(Icons.person_2_outlined),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Form(
+                          key: _formkey,
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: 15.0,
                               ),
-                            ),
-                            SizedBox(
-                              height: 15.0,
-                            ),
-                            
-/////////////////////////////eamil\\\\\\\\\\\\\\  as
-                            TextFormField(
-                              controller: emailcontroller,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return "Please Enter Your E-mail";
-                                  
-                                } else if (!RegExp(
-                                        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                                    .hasMatch(value)) {
-                                  return "Please Enter a valid Email";
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                hintText: 'Email',
-                                hintStyle: Appwidget.SimitextFeildStyle(),
-                                prefixIcon: Icon(Icons.email_outlined),
+                              Text(
+                                'Sing UP',
+                                style: Appwidget.boldTextFeildStyle(),
                               ),
-                            ),
-                            SizedBox(
-                              height: 15.0,
-                            ),
- ////////////////////////////phone number \\\\\\\\\\\\\\                           
-                            TextFormField(
-                              controller: phonecontroller,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return "Please Enter Your Phone Number";
-                                } else if (value.length < 13) {
-                                  return "Please Enter a valid Phone Number";
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                hintText: 'Phone Number',
-                                hintStyle: Appwidget.SimitextFeildStyle(),
-                                prefixIcon: CountryCodePicker(
-                                  onChanged: (country) {
-                                    setState(() {
-                                      if (phonecontroller.text.length < 12) {
-                                        phonecontroller.text =
-                                            country.dialCode! +
-                                                phonecontroller.text;
-                                      }
-                                    });
-                                  },
-                                  initialSelection: 'EG',
-                                  favorite: ['+20', 'EG'],
-                                  
-                                  showCountryOnly: true,
-                                  showFlag: false,
+                              SizedBox(
+                                height: 15.0,
+                              ),
+                              TextFormField(
+                                controller: namecontroller,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Please Enter Your Name";
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  hintText: 'Name',
+                                  hintStyle: Appwidget.SimitextFeildStyle(),
+                                  prefixIcon: Icon(Icons.person_2_outlined),
                                 ),
                               ),
-                            ),
-////////////////////////////////////////////password\\\\\\\\\\
-                            SizedBox(height: 15,),
-                            TextFormField(
-                              controller: passwordcontroller,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return "Please Enter Your Password";
-                                } else if (value.length < 7) {
-                                  return "Password should be at least 7 characters";
-                                }
-                                return null;
-                              },
-                              obscureText: true,
-                              decoration: InputDecoration(
-                                hintText: 'Password',
-                                hintStyle: Appwidget.SimitextFeildStyle(),
-                                prefixIcon: Icon(Icons.password_outlined),
+                              SizedBox(
+                                height: 15.0,
                               ),
-                            ),
-
-                            SizedBox(
-                              height: 30.0,
-                            ),
-//////////////////////////////// login botton adding///////////////////////////////////////
-                            GestureDetector(
-                              /////////////////////////////////check validate//////////////////////////////////////////
-                              onTap: () async {
-                                if (_formkey.currentState!.validate()) {
-                                  setState(() {
-                                    email = emailcontroller.text;
-                                    name = namecontroller.text;
-                                    password = passwordcontroller.text;
-                                  });
-                                }
-                                registration();
-                              },
-                              child: Material(
-                                elevation: 20.0,
-                                borderRadius: BorderRadius.circular(25),
-                                child: Container(
+                              TextFormField(
+                                controller: emailcontroller,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Please Enter Your E-mail";
+                                  } else if (!RegExp(
+                                          r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                                      .hasMatch(value)) {
+                                    return "Please Enter a valid Email";
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  hintText: 'Email',
+                                  hintStyle: Appwidget.SimitextFeildStyle(),
+                                  prefixIcon: Icon(Icons.email_outlined),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 15.0,
+                              ),
+                              TextFormField(
+                                controller: phonecontroller,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Please Enter Your Phone Number";
+                                  } else if (value.length < 13) {
+                                    return "Please Enter a valid Phone Number";
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  hintText: 'Phone Number',
+                                  hintStyle: Appwidget.SimitextFeildStyle(),
+                                  prefixIcon: CountryCodePicker(
+                                    onChanged: (country) {
+                                      setState(() {
+                                        if (phonecontroller.text.length < 12) {
+                                          phonecontroller.text =
+                                              country.dialCode! +
+                                                  phonecontroller.text;
+                                        }
+                                      });
+                                    },
+                                   
+                                    favorite: ['+20', 'EG'],
+                                    showCountryOnly: true,
+                                    showFlag: false,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              TextFormField(
+                                controller: passwordcontroller,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Please Enter Your Password";
+                                  } else if (value.length < 7) {
+                                    return "Password should be at least 7 characters";
+                                  }
+                                  return null;
+                                },
+                                obscureText: true,
+                                decoration: InputDecoration(
+                                  hintText: 'Password',
+                                  hintStyle: Appwidget.SimitextFeildStyle(),
+                                  prefixIcon: Icon(Icons.password_outlined),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 30.0,
+                              ),
+                              GestureDetector(
+                                onTap: () async {
+                                  if (_formkey.currentState!.validate()) {
+                                    setState(() {
+                                      email = emailcontroller.text;
+                                      name = namecontroller.text;
+                                      password = passwordcontroller.text;
+                                    });
+                                    registration();
+                                  }
+                                },
+                                child: Material(
+                                  elevation: 20.0,
+                                  borderRadius: BorderRadius.circular(25),
+                                  child: Container(
                                     padding: EdgeInsets.symmetric(vertical: 5),
                                     width: 200.0,
                                     decoration: BoxDecoration(
-                                        color: Colors.orange,
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
+                                      color: Colors.orange,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
                                     child: Center(
-                                      child: Text('SING UP',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 25.0,
-                                              fontFamily: 'Roboto',
-                                              fontWeight: FontWeight.bold)),
-                                    )),
+                                      child: Text(
+                                        'SING UP',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 25.0,
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-
-                            // end of text fileds adding
-                            ///Already  have account
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 50.0,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => LogIn()));
-                    },
-                    child: Text(
-                      "Already  have account? Login",
-                      style: Appwidget.HeadLinetextFeildStyle(),
+                    SizedBox(
+                      height: 50.0,
                     ),
-                  )
-                ],
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => LogIn()),
+                        );
+                      },
+                      child: Text(
+                        "Already  have account? Login",
+                        style: Appwidget.HeadLinetextFeildStyle(),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
-        )),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -51,7 +51,7 @@ class _DetailsState extends State<Details> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               backgroundColor: Colors.orangeAccent,
-              duration: Duration(seconds: 1),
+              duration: Duration(milliseconds: 1000),
               content: Text("Item added to cart", style: Appwidget.HeadLinetextFeildStyle()),
             ),
           );

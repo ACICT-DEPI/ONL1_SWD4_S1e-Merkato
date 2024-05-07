@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:marwan_be2/Database/pref.dart';
+import 'package:marwan_be2/my-cart/database_methods.dart.dart';
 
 class DatabaseMethods {
   // Method to add user details to the database
@@ -85,4 +88,61 @@ class DatabaseMethods {
       throw e;
     }
   }
+Future<void> clearCart(String userId) async {
+  try {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('users').doc(userId).collection('Cart').get();
+    print("Number of documents in Cart collection before deletion: ${querySnapshot.size}");
+    for (DocumentSnapshot ds in querySnapshot.docs) {
+      await ds.reference.delete();
+    }
+    querySnapshot = await FirebaseFirestore.instance.collection('users').doc(userId).collection('Cart').get();
+    print("Number of documents in Cart collection after deletion: ${querySnapshot.size}");
+    print("Cart cleared.");
+  } catch (e) {
+    print("Error clearing cart: $e");
+    throw e;
+  }
+}
+
+
+ Future<void> addOrder(OrderModel order) async {
+  try {
+    await FirebaseFirestore.instance.collection("orders").add(order.toMap());
+    print("Order added successfully");
+  } catch (e) {
+    print("Error adding order: $e");
+    throw e;
+  }
+}
+
+Future<void> confirmOrder(BuildContext context, OrderModel order) async {
+  try {
+    // Add the order to the database
+    await addOrder(order);
+
+    // Clear the cart
+    String? userId = await SharedPreferenceHelper().getUserId();
+    print("User ID: $userId");
+    if (userId != null) {
+      await clearCart(userId);
+    }
+
+    // Show a success message
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Order placed successfully')),
+    );
+
+    // Navigate back to the home screen
+    Navigator.pop(context);
+  } catch (e) {
+    // Show an error message
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error placing order')),
+    );
+  }
+}
+
+
+
+
 }

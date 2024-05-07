@@ -1,40 +1,28 @@
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+class OrderModel {
+  String? userId;
+  int? total;
+  bool? delivery;
+  String? address;
+  String? phoneNumber;
+  String? comments;
 
-class CartItem {
-  final String id;
-  final String name;
-  int quantity;
-  final int total;
-  final String image;
-
-  CartItem({
-    required this.id,
-    required this.name,
-    required this.quantity,
-    required this.total,
-    required this.image,
+  OrderModel({
+    this.userId,
+    this.total,
+    this.delivery,
+    this.address,
+    this.phoneNumber,
+    this.comments,
   });
-}
 
-class CartProvider extends ChangeNotifier {
-  List<CartItem> _cartItems = [];
-
-  List<CartItem> get cartItems => _cartItems;
-
-  void addToCart(CartItem item) {
-    _cartItems.add(item);
-    notifyListeners();
-  }
-
-  void removeFromCart(String itemId) {
-    _cartItems.removeWhere((item) => item.id == itemId);
-    notifyListeners();
-  }
-
-  void updateQuantity(String itemId, int newQuantity) {
-    final cartItem = _cartItems.firstWhere((item) => item.id == itemId);
-    cartItem.quantity = newQuantity;
-    notifyListeners();
+  Map<String, dynamic> toMap() {
+    return {
+      'userId': userId,
+      'total': total,
+      'delivery': delivery,
+      'address': address,
+      'phoneNumber': phoneNumber,
+      'comments': comments,
+    };
   }
 }

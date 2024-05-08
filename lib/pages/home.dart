@@ -135,24 +135,14 @@ class _HomeState extends State<Home> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('WELCOME TO BE2 APP',
+                Text('    WELCOME TO BE2 APP',
                     style: Appwidget.boldTextFeildStyle()),
-                Container(
-                  margin: EdgeInsets.only(right: 10.0),
-                  padding: EdgeInsets.all(3),
-                  decoration: BoxDecoration(
-                      color: Colors.orange,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Icon(
-                    Icons.shopping_cart,
-                    color: Color.fromARGB(255, 245, 245, 243),
-                  ),
-                ),
+                
               ],
             ),
 
             SizedBox(
-              height: 30,
+              height: 20,
             ),
             Text('ALL YOU WANT IS HERE',
                 style: Appwidget.HeadLinetextFeildStyle()),
@@ -283,7 +273,7 @@ class _HomeState extends State<Home> {
             Pizza = false;
             Drinks = false;
             Sauces = true;
-            fooditemStream = await DatabaseMethods().getFoodItem("Sauces");
+            fooditemStream = await DatabaseMethods().getFoodItem("Appetizers");
             setState(() {});
           },
           child: Material(
@@ -298,7 +288,7 @@ class _HomeState extends State<Home> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.asset(
-                  'images/sauces.png',
+                  'images/extras.png',
                   height: 40.0,
                   width: 40.0,
                   fit: BoxFit.cover,

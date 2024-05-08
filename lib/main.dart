@@ -12,7 +12,6 @@ import 'package:marwan_be2/pages/details.dart';
 import 'package:marwan_be2/pages/home.dart';
 import 'package:marwan_be2/pages/login.dart';
 import 'package:marwan_be2/pages/singin.dart';
-import 'package:marwan_be2/pages/wallet.dart';
 
 void main() async {
   // // fire base connection
@@ -51,7 +50,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: LunchPage());
+        home: BottomNav());
   }
 }
 

@@ -302,31 +302,35 @@ class _OrderState extends State<Order> {
     return Scaffold(
       body: Column(
         children: [
-          Material(
-            elevation: 3.0,
-            borderRadius: BorderRadius.circular(0),
-            color: Color.fromARGB(244, 255, 153, 0),
-            child: Container(
-              padding: EdgeInsets.only(bottom: 10.0, top: 30),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  
-                  Text(
-                    'MY CART',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 0, 0, 0),
-                      fontSize: 30.0,
-                      fontWeight: FontWeight.bold,
+          
+          Container(margin: EdgeInsets.only(top: 40),
+            child: Material(
+              elevation: 3.0,
+              borderRadius: BorderRadius.circular(0),
+              color: Color.fromARGB(244, 255, 153, 0),
+              child: Container(
+                
+                padding: EdgeInsets.only(bottom: 10.0, top: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    
+                    Text(
+                      'MY CART',
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 0, 0, 0),
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  SizedBox(width: 15),
-                  Icon(
-                    Icons.shopping_cart,
-                    color: const Color.fromARGB(255, 0, 0, 0),
-                    size: 30,
-                  ),
-                ],
+                    SizedBox(width: 15),
+                    Icon(
+                      Icons.shopping_cart,
+                      color: const Color.fromARGB(255, 0, 0, 0),
+                      size: 30,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:marwan_be2/admin/List.dart';
 import 'package:marwan_be2/admin/add_food.dart';
-import 'package:marwan_be2/pages/wallet.dart';
 import 'package:marwan_be2/widget/widget_support.dart';
 
 class HomeAdmin extends StatefulWidget {
@@ -48,10 +48,10 @@ class _HomeAdminState extends State<HomeAdmin> {
                         Padding(
                           padding: EdgeInsets.all(6.0),
                           child: Image.asset(
-                            "images/Add.png",
+                            "images/addd.png",
                             height: 100,
                             width: 100,
-                            fit: BoxFit.fill,
+                            fit: BoxFit.cover,
                           ),
                         ),
                         SizedBox(
@@ -75,7 +75,7 @@ class _HomeAdminState extends State<HomeAdmin> {
              
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Wallet()));
+                    MaterialPageRoute(builder: (context) => OrdersList()));
               },
                child: Material(
                   elevation: 10.0,

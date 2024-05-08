@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Wallet extends StatefulWidget {
+class OrdersList extends StatefulWidget {
   @override
-  _WalletState createState() => _WalletState();
+  _OrdersListState createState() => _OrdersListState();
 }
 
-class _WalletState extends State<Wallet> {
+class _OrdersListState extends State<OrdersList> {
   List<bool> orderCheckedList = [];
 
   @override

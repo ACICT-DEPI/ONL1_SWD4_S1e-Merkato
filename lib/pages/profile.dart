@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:marwan_be2/Database/auth.dart';
 import 'package:marwan_be2/Database/pref.dart';
+import 'package:marwan_be2/lunch_page.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -13,7 +14,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  String? profile, name, email,phone;
+  String? profile, name, email, phone;
 
   // final ImagePicker _picker = ImagePicker();
   // File? selectedImage;
@@ -73,15 +74,16 @@ class _ProfileState extends State<Profile> {
                     Stack(
                       children: [
                         Container(
-                          padding:
-                              EdgeInsets.only(top: 45.0, left: 20.0, right: 20.0),
+                          padding: EdgeInsets.only(
+                              top: 45.0, left: 20.0, right: 20.0),
                           height: MediaQuery.of(context).size.height / 4.3,
                           width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
                               color: Colors.orange,
                               borderRadius: BorderRadius.vertical(
                                   bottom: Radius.elliptical(
-                                      MediaQuery.of(context).size.width, 105.0))),
+                                      MediaQuery.of(context).size.width,
+                                      105.0))),
                         ),
                         // Center(
                         //   child: Container(
@@ -182,8 +184,8 @@ class _ProfileState extends State<Profile> {
                         ),
                       ),
                     ),
-                ///////////////////////////email feild\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-                
+                    ///////////////////////////email feild\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
                     SizedBox(
                       height: 20.0,
                     ),
@@ -233,12 +235,12 @@ class _ProfileState extends State<Profile> {
                         ),
                       ),
                     ),
-                
+
                     SizedBox(
                       height: 20.0,
                     ),
                     ////////////////////trems and condition\\\\\\\\\\\\\\\\\
-                   Container(
+                    Container(
                       margin: EdgeInsets.symmetric(horizontal: 20.0),
                       child: Material(
                         borderRadius: BorderRadius.circular(10),
@@ -284,7 +286,7 @@ class _ProfileState extends State<Profile> {
                         ),
                       ),
                     ),
-                
+
                     SizedBox(
                       height: 20,
                     ),
@@ -337,59 +339,62 @@ class _ProfileState extends State<Profile> {
                     //   height: 20,
                     // ),
 ////////////////////////////////////\\\\\\\\\\\\\\\\\\\
-                        Container(
+                    //     Container(
+                    //   margin: EdgeInsets.symmetric(horizontal: 20.0),
+                    //   child: Material(
+                    //     borderRadius: BorderRadius.circular(10),
+                    //     elevation: 2.0,
+                    //     child: Container(
+                    //       padding: EdgeInsets.symmetric(
+                    //         vertical: 15.0,
+                    //         horizontal: 10.0,
+                    //       ),
+                    //       decoration: BoxDecoration(
+                    //           color: Colors.white,
+                    //           borderRadius: BorderRadius.circular(10)),
+                    //       child: Row(
+                    //         children: [
+                    //           Icon(
+                    //             Icons.description,
+                    //             color: Colors.black,
+                    //           ),
+                    //           SizedBox(
+                    //             width: 20.0,
+                    //           ),
+                    //           Column(
+                    //             crossAxisAlignment: CrossAxisAlignment.start,
+                    //             children: [
+                    //               Text(
+                    //                 "Terms and Condition",
+                    //                 style: TextStyle(
+                    //                     color: Colors.black,
+                    //                     fontSize: 20.0,
+                    //                     fontWeight: FontWeight.w600),
+                    //               )
+                    //             ],
+                    //           )
+                    //         ],
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    // SizedBox(
+                    //   height: 20,
+                    // ),
+                    ///////// ///////////////////////LOg out\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+                    Container(
                       margin: EdgeInsets.symmetric(horizontal: 20.0),
                       child: Material(
                         borderRadius: BorderRadius.circular(10),
                         elevation: 2.0,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 15.0,
-                            horizontal: 10.0,
-                          ),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.description,
-                                color: Colors.black,
-                              ),
-                              SizedBox(
-                                width: 20.0,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Terms and Condition",
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 20.0,
-                                        fontWeight: FontWeight.w600),
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    ///////// ///////////////////////LOg out\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-                    GestureDetector(
-                      onTap: (){
-                       AuthMethods().signOut();
-                      },
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 20.0),
-                        padding: EdgeInsets.only(bottom: 60),
-                        child: Material(
-                          borderRadius: BorderRadius.circular(10),
-                          elevation: 2.0,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LunchPage()),
+                            );
+                          },
                           child: Container(
                             padding: EdgeInsets.symmetric(
                               vertical: 15.0,
@@ -419,15 +424,12 @@ class _ProfileState extends State<Profile> {
                                     )
                                   ],
                                 ),
-                                
                               ],
                             ),
                           ),
-                          
                         ),
                       ),
                     ),
-                    
                   ],
                 ),
               ),

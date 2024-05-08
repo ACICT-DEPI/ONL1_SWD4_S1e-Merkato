@@ -5,6 +5,7 @@ class OrderModel {
   String? address;
   String? phoneNumber;
   String? comments;
+  List<OrderItem>? items;
 
   OrderModel({
     this.userId,
@@ -13,6 +14,7 @@ class OrderModel {
     this.address,
     this.phoneNumber,
     this.comments,
+    this.items,
   });
 
   Map<String, dynamic> toMap() {
@@ -23,6 +25,27 @@ class OrderModel {
       'address': address,
       'phoneNumber': phoneNumber,
       'comments': comments,
+      'items': items != null ? items!.map((item) => item.toMap()).toList() : null,
     };
   }
 }
+class OrderItem {
+  String? name;
+  int? quantity;
+  int? total;
+
+  OrderItem({
+    this.name,
+    this.quantity,
+    this.total,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'quantity': quantity,
+      'total': total,
+    };
+  }
+}
+

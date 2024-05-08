@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:marwan_be2/Database/pref.dart';
-import 'package:marwan_be2/my-cart/database_methods.dart.dart';
+import 'package:marwan_be2/my-cart/Ordes-list.dart';
 
 class DatabaseMethods {
   // Method to add user details to the database
@@ -114,34 +114,83 @@ Future<void> clearCart(String userId) async {
     throw e;
   }
 }
+//////////////////////////////////////
+ Future<void> confirmOrder(BuildContext context, String userId, bool isDelivery, String address,
+      String phoneNumber, String comments, List<Map<String, dynamic>> cartItems) async {
+    try {
+      // Create a new order document
+      DocumentReference orderRef = FirebaseFirestore.instance.collection("orders").doc();
 
-Future<void> confirmOrder(BuildContext context, OrderModel order) async {
-  try {
-    // Add the order to the database
-    await addOrder(order);
+      // Create a list to store order items
+      List<Map<String, dynamic>> orderItems = [];
 
-    // Clear the cart
-    String? userId = await SharedPreferenceHelper().getUserId();
-    print("User ID: $userId");
-    if (userId != null) {
+      // Loop through cart items and add them to order items list
+      for (Map<String, dynamic> cartItem in cartItems) {
+        orderItems.add({
+          'name': cartItem['Name'],
+          'quantity': cartItem['Quantity'],
+          'total': cartItem['total'],
+        });
+      }
+
+      // Add order details to the order document
+      await orderRef.set({
+        'userId': userId,
+        'delivery': isDelivery,
+        'address': address,
+        'phoneNumber': phoneNumber,
+        'comments': comments,
+        'items': orderItems,
+        // Add other order details like total, delivery address, etc. if needed
+      });
+
+      print("Order confirmed and items added to Orders collection successfully");
+
+      // Clear the cart after order confirmation
       await clearCart(userId);
+
+      // Show a success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Order confirmed and cart cleared.'),
+        ),
+      );
+
+      // Navigate back to the home screen
+      Navigator.pop(context);
+    } catch (e) {
+      print("Error confirming order: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('An error occurred while confirming the order'),
+        ),
+      );
     }
+  }
+  //////////////////////////\\\\\\\\\\\\\\\\\\\
 
-    // Show a success message
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Order placed successfully')),
+Future<void> addOrderItemToOrder(String userId, Map<String, dynamic> itemData) async {
+  try {
+    // Convert itemData to OrderItem object
+    OrderItem orderItem = OrderItem(
+      name: itemData['Name'],
+      quantity: itemData['Quantity'],
+      total: itemData['total'],
     );
 
-    // Navigate back to the home screen
-    Navigator.pop(context);
+    // Get a reference to the user's Orders collection
+    CollectionReference ordersRef =
+        FirebaseFirestore.instance.collection("users").doc(userId).collection("Orders");
+
+    // Add the item to the Orders collection
+    await ordersRef.add(orderItem.toMap());
+
+    print("Item added to Orders collection successfully");
   } catch (e) {
-    // Show an error message
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error placing order')),
-    );
+    print("Error adding item to Orders collection: $e");
+    throw e;
   }
 }
-
 
 
 

@@ -27,6 +27,7 @@ class _SingUpState extends State<SingUp> {
 
   registration() async {
     try {
+      // ignore: unused_local_variable
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
 

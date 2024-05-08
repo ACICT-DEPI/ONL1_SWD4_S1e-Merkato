@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:marwan_be2/Database/database.dart';
 import 'package:marwan_be2/Database/pref.dart';
-import 'package:marwan_be2/my-cart/database_methods.dart.dart';
+import 'package:marwan_be2/my-cart/Ordes-list.dart';
 import 'package:marwan_be2/widget/widget_support.dart';
 
 class Order extends StatefulWidget {
@@ -18,6 +18,28 @@ class _OrderState extends State<Order> {
   String address = '';
   String phoneNumber = '';
   String comments = '';
+
+  
+  void calculateTotal() async {
+  try {
+    String? userId = await SharedPreferenceHelper().getUserId();
+    if (userId != null) {
+      Stream<QuerySnapshot> cartStream =
+          await DatabaseMethods().getFoodCart(userId);
+      int newTotal = 0;
+      await for (QuerySnapshot snapshot in cartStream) {
+        for (DocumentSnapshot ds in snapshot.docs) {
+          newTotal += (ds['total'] as int);
+        }
+      }
+      setState(() {
+        total = newTotal;
+      });
+    }
+  } catch (e) {
+    print("Error calculating total: $e");
+  }
+}
 
   @override
   void initState() {
@@ -179,54 +201,28 @@ class _OrderState extends State<Order> {
     );
   }
 
-void confirmOrder(BuildContext context, bool isDelivery, String address, String phoneNumber, String comments) async {
+void confirmOrder(BuildContext context, bool isDelivery, String address,
+    String phoneNumber, String comments) async {
   try {
     String? userId = await SharedPreferenceHelper().getUserId();
     if (userId != null) {
-      // Here you can perform any actions necessary to confirm the order,
-      // such as sending order details to a backend server or displaying a summary to the user.
+      // Create a list to store cart items
+      List<Map<String, dynamic>> cartItems = [];
 
-      // Clear the cart
-      await clearCart(userId);
+      // Get cart items from Firestore
+      QuerySnapshot cartSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('Cart')
+          .get();
 
-      // Show a confirmation dialog to the user
-      bool confirmed = await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Confirm Order'),
-            content: Text('Do you want to confirm this order?'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context, true); // Return true if confirmed
-                },
-                child: Text('Confirm'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context, false); // Return false if canceled
-                },
-                child: Text('Cancel'),
-              ),
-            ],
-          );
-        },
-      );
+      // Add cart items to the list
+      cartSnapshot.docs.forEach((doc) {
+        cartItems.add(doc.data() as Map<String, dynamic>);
+      });
 
-      if (confirmed) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Order confirmed and cart cleared.'),
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Order not confirmed. Cart was not cleared.'),
-          ),
-        );
-      }
+      // Confirm the order and clear the cart
+      await DatabaseMethods().confirmOrder(context, userId, isDelivery, address, phoneNumber, comments, cartItems);
     }
   } catch (e) {
     print("Error confirming order: $e");
@@ -237,7 +233,9 @@ void confirmOrder(BuildContext context, bool isDelivery, String address, String 
     );
   }
 }
-////////////////////\\\\\\\\\\\\\\\\\\\\\\
+
+
+////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\
 
   Future<void> clearCart(String userId) async {
     try {
@@ -252,40 +250,36 @@ void confirmOrder(BuildContext context, bool isDelivery, String address, String 
   }
 
   void removeItemFromCart(String itemId) async {
-    try {
-      String? userId = await SharedPreferenceHelper().getUserId();
-      if (userId != null) {
-        await DatabaseMethods().removeCartItem(userId, itemId);
-        print("Item $itemId removed from cart.");
-        calculateTotal();
-      } else {
-        print("User ID not found.");
-      }
-    } catch (e) {
-      print("Error removing item from cart: $e");
-    }
-  }
+  try {
+    String? userId = await SharedPreferenceHelper().getUserId();
+    if (userId != null) {
+      // Retrieve the item from the cart
+      DocumentSnapshot itemSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('Cart')
+          .doc(itemId)
+          .get();
 
-  void calculateTotal() async {
-    try {
-      String? userId = await SharedPreferenceHelper().getUserId();
-      if (userId != null) {
-        Stream<QuerySnapshot> cartStream =
-            await DatabaseMethods().getFoodCart(userId);
-        int newTotal = 0;
-        await for (QuerySnapshot snapshot in cartStream) {
-          for (DocumentSnapshot ds in snapshot.docs) {
-            newTotal += (ds['total'] as int);
-          }
-        }
-        setState(() {
-          total = newTotal;
-        });
-      }
-    } catch (e) {
-      print("Error calculating total: $e");
+      // Convert the item data to a Map
+      Map<String, dynamic> itemData = itemSnapshot.data() as Map<String, dynamic>;
+
+      // Add the item to the Orders collection
+      await DatabaseMethods().addOrderItemToOrder(userId, itemData);
+
+      // Remove the item from the cart
+      await DatabaseMethods().removeCartItem(userId, itemId);
+
+      // Recalculate the total after removing the item
+      calculateTotal();
+    } else {
+      print("User ID not found.");
     }
+  } catch (e) {
+    print("Error removing item from cart: $e");
   }
+}
+
 
   @override
   Widget build(BuildContext context) {

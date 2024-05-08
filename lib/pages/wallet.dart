@@ -1,198 +1,195 @@
-
 import 'package:flutter/material.dart';
-import 'package:marwan_be2/widget/widget_support.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Wallet extends StatefulWidget {
-  const Wallet({super.key});
-
   @override
-  State<Wallet> createState() => _WalletState();
+  _WalletState createState() => _WalletState();
 }
 
 class _WalletState extends State<Wallet> {
-  ////////
-  ///
-  ///
+  List<bool> orderCheckedList = [];
 
-  Map<String, dynamic>? paymentIntent;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        margin: EdgeInsets.only(top: 40.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Material(
-              elevation: 3.0,
-              borderRadius: BorderRadius.circular(0),
-              color: Color.fromARGB(244, 255, 153, 0),
-              child: Container(
-                padding: EdgeInsets.only(bottom: 10.0, top: 10),
-                child: Center(
-                  child: Text(
-                    'MY WALLET',
-                    style: TextStyle(
-                        color: Color.fromARGB(255, 255, 253, 253),
-                        fontSize: 30.0,
-                        fontWeight: FontWeight.bold),
+      appBar: AppBar(
+        title: Text('Orders List'),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('orders').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(
+              child: Text('No orders found.'),
+            );
+          } else {
+            return ListView.builder(
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder: (context, index) {
+                DocumentSnapshot orderDoc = snapshot.data!.docs[index];
+                Map<String, dynamic> orderData = orderDoc.data() as Map<String, dynamic>;
+                int total = 0;
+
+                if (orderCheckedList.length <= index) {
+                  orderCheckedList.add(false);
+                }
+
+                if (orderData['items'] != null) {
+                  for (var item in orderData['items']) {
+                    total += (item['total'] as int);
+                  }
+                }
+
+                return Card(
+                  margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  elevation: 2.0,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Order #${orderDoc.id}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12.0,
+                              ),
+                            ),
+                            if (!orderCheckedList[index]) // Show an alert if order isn't checked
+                              Text(
+                                'Order not checked',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 12.0,
+                                ),
+                              ),
+                          ],
+                        ),
+                        SizedBox(height: 8.0),
+                        Row(
+                          children: [
+                            Icon(
+                              orderData['delivery'] ? Icons.delivery_dining : Icons.storefront,
+                              color: orderData['delivery'] ? Colors.green : Colors.blue,
+                            ),
+                            SizedBox(width: 8.0),
+                            Text(
+                              orderData['delivery'] ? 'Delivery' : 'Pick-up',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14.0,
+                                color: orderData['delivery'] ? Colors.green : Colors.blue,
+                              ),
+                            ),
+                            Spacer(),
+                            Text(
+                              'User ID: ${orderData['userId']}',
+                              style: TextStyle(
+                                fontSize: 14.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8.0),
+                        if (orderData['delivery'])
+                          Text(
+                            'Delivery Address: ${orderData['address']}',
+                            style: TextStyle(
+                              fontSize: 14.0,
+                            ),
+                          ),
+                        Text(
+                          'Phone Number: ${orderData['phoneNumber']}',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                          ),
+                        ),
+                        SizedBox(height: 8.0),
+                        if (orderData['comments'] != null && orderData['comments'].isNotEmpty)
+                          Text(
+                            'Comments: ${orderData['comments']}',
+                            style: TextStyle(
+                              fontSize: 14.0,
+                            ),
+                          ),
+                        SizedBox(height: 8.0),
+                        Divider(),
+                        SizedBox(height: 8.0),
+                        Text(
+                          'Order Items:',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14.0,
+                          ),
+                        ),
+                        SizedBox(height: 8.0),
+                        if (orderData['items'] != null)
+                          ...((orderData['items'] as List<dynamic>).map((item) {
+                            return ListTile(
+                              title: Text(
+                                item['name'] ?? '',
+                                style: TextStyle(fontSize: 14.0),
+                              ),
+                              subtitle: Text(
+                                'Quantity: ${item['quantity']}, Total: \$${item['total']}',
+                                style: TextStyle(fontSize: 12.0),
+                              ),
+                            );
+                          }).toList()),
+                        SizedBox(height: 16.0),
+                        Center(
+                          
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  // Check the order
+                                  setState(() {
+                                    orderCheckedList[index] = true;
+                                  });
+                                },
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
+                                    return orderCheckedList[index] ? Colors.green : Colors.red;
+                                  }),
+                                ),
+                                child: Text(orderCheckedList[index] ? 'Order Checked' : 'Prepare Order',style: TextStyle(color: Colors.white,fontSize: 20),),
+                              ),
+                              SizedBox(width: 50.0),
+                              
+                              
+                            ],
+                          ),
+                        ),SizedBox(height: 10.0),
+                        
+                        Text(
+                          'Total for Order: \$${total}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
-              margin: EdgeInsets.all(5),
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                  color: Color(0xFFF2F2F2),
-                  borderRadius: BorderRadius.circular(50)),
-              child: Row(
-                children: [
-                  Image.asset(
-                    "images/wallet.png",
-                    width: 60,
-                    height: 60,
-                    fit: BoxFit.fill,
-                  ),
-                  SizedBox(
-                    width: 20.0,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Your Wallet ",
-                        style: Appwidget.LiighttextFeildStyle(),
-                      ),
-                      SizedBox(
-                        height: 5.0,
-                      ),
-                      Text(
-                        " \EGP" + "100",
-                        style: Appwidget.HeadLinetextFeildStyle(),
-                      )
-                    ],
-                  )
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 20.0,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: Text(
-                "Add money",
-                style: Appwidget.boldTextFeildStyle(),
-              ),
-            ),
-            SizedBox(height: 10.0),
-            //////////////////add money amount \\\\\\\\\\\\\\\\\\\\\\\\
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Container(
-                  padding: EdgeInsets.all(7),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Color.fromARGB(255, 0, 0, 0)),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    '\EGP' + "100",
-                    style: Appwidget.SimitextFeildStyle(),
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.all(7),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Color.fromARGB(255, 0, 0, 0)),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    '\EGP' + "200",
-                    style: Appwidget.SimitextFeildStyle(),
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.all(7),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Color.fromARGB(255, 0, 0, 0)),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    '\EGP' + "300",
-                    style: Appwidget.SimitextFeildStyle(),
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.all(7),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Color.fromARGB(255, 0, 0, 0)),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    '\EGP' + "500",
-                    style: Appwidget.SimitextFeildStyle(),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 50.0,
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 40.0),
-              padding: EdgeInsets.symmetric(vertical: 12.0),
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                  color: Colors.orangeAccent,
-                  borderRadius: BorderRadius.circular(20)),
-              child: Center(
-                  child: Text(
-                "Add Money",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold),
-              )),
-            )
-          ],
-        ),
+                );
+              },
+            );
+          }
+        },
       ),
     );
   }
-
-
-//////// money adding  \\\\\\\\\\\\\\\
- 
-
-  // Future<void> makePayment(String amount) async {
-  //   try {
-  //     paymentIntent = await createPaymentIntent(amount, 'INR');
-  //     //Payment Sheet
-  //     await Stripe.instance
-  //         .initPaymentSheet(
-  //             paymentSheetParameters: SetupPaymentSheetParameters(
-  //                 paymentIntentClientSecret: paymentIntent!['client_secret'],
-  //                 // applePay: const PaymentSheetApplePay(merchantCountryCode: '+92',),
-  //                 // googlePay: const PaymentSheetGooglePay(testEnv: true, currencyCode: "US", merchantCountryCode: "+92"),
-  //                 style: ThemeMode.dark,
-  //                 merchantDisplayName: 'Adnan'))
-  //         .then((value) {});
-
-  //     ///now finally display payment sheeet
-  //     displayPaymentSheet(amount);
-  //   } catch (e, s) {
-  //     print('exception:$e$s');
-  //   }
-  // }
-
-
-
-
-
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:marwan_be2/admin/add_food.dart';
+import 'package:marwan_be2/pages/wallet.dart';
 import 'package:marwan_be2/widget/widget_support.dart';
 
 class HomeAdmin extends StatefulWidget {
@@ -46,7 +48,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                         Padding(
                           padding: EdgeInsets.all(6.0),
                           child: Image.asset(
-                            "images/clas.png",
+                            "images/Add.png",
                             height: 100,
                             width: 100,
                             fit: BoxFit.fill,
@@ -68,6 +70,56 @@ class _HomeAdminState extends State<HomeAdmin> {
                 ),
               ),
             ),
+            SizedBox(height: 30,),
+             GestureDetector(
+             
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Wallet()));
+              },
+               child: Material(
+                  elevation: 10.0,
+                  borderRadius: BorderRadius.circular(20),
+                  child: Center(
+                    child: Container(
+                      padding: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: Colors.orange,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(6.0),
+                            child: Container(
+                              
+                              child: Image.asset(
+                                
+                                "images/order.png",
+                                height: 100,
+                                width: 100,
+                                fit: BoxFit.cover,
+                                
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 30.0,
+                            
+                          ),
+                          Text(
+                            "Orders list",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+             ),
             
           ],
         ),

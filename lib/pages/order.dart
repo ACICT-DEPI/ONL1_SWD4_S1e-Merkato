@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:marwan_be2/Database/database.dart';
 import 'package:marwan_be2/Database/pref.dart';
-import 'package:marwan_be2/my-cart/Ordes-list.dart';
 import 'package:marwan_be2/widget/widget_support.dart';
 
 class Order extends StatefulWidget {
@@ -19,27 +18,26 @@ class _OrderState extends State<Order> {
   String phoneNumber = '';
   String comments = '';
 
-  
   void calculateTotal() async {
-  try {
-    String? userId = await SharedPreferenceHelper().getUserId();
-    if (userId != null) {
-      Stream<QuerySnapshot> cartStream =
-          await DatabaseMethods().getFoodCart(userId);
-      int newTotal = 0;
-      await for (QuerySnapshot snapshot in cartStream) {
-        for (DocumentSnapshot ds in snapshot.docs) {
-          newTotal += (ds['total'] as int);
+    try {
+      String? userId = await SharedPreferenceHelper().getUserId();
+      if (userId != null) {
+        Stream<QuerySnapshot> cartStream =
+            await DatabaseMethods().getFoodCart(userId);
+        int newTotal = 0;
+        await for (QuerySnapshot snapshot in cartStream) {
+          for (DocumentSnapshot ds in snapshot.docs) {
+            newTotal += (ds['total'] as int);
+          }
         }
+        setState(() {
+          total = newTotal;
+        });
       }
-      setState(() {
-        total = newTotal;
-      });
+    } catch (e) {
+      print("Error calculating total: $e");
     }
-  } catch (e) {
-    print("Error calculating total: $e");
   }
-}
 
   @override
   void initState() {
@@ -71,169 +69,187 @@ class _OrderState extends State<Order> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      'Checkout Options',
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
+        return Container(
+          height:
+              MediaQuery.of(context).size.height * 0.8, // Set a specific height
+          decoration: BoxDecoration(
+            color: Colors.white, // Set the color to orange
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20.0),
+              topRight: Radius.circular(20.0),
+            ),
+          ),
+          child: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return SingleChildScrollView(
+                child: Container(
+                  padding: EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        'Checkout Options',
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 20.0),
-                    ListTile(
-                      title: Text('Delivery'),
-                      leading: Radio(
-                        value: true,
-                        groupValue: isDelivery,
-                        onChanged: (value) {
-                          setState(() {
-                            isDelivery = value as bool;
-                          });
-                        },
+                      SizedBox(height: 20.0),
+                      ListTile(
+                        title: Text('Delivery'),
+                        leading: Radio(
+                          value: true,
+                          groupValue: isDelivery,
+                          onChanged: (value) {
+                            setState(() {
+                              isDelivery = value as bool;
+                            });
+                          },
+                        ),
                       ),
-                    ),
-                    ListTile(
-                      title: Text('Pick-up from Restaurant'),
-                      leading: Radio(
-                        value: false,
-                        groupValue: isDelivery,
-                        onChanged: (value) {
-                          setState(() {
-                            isDelivery = value as bool;
-                          });
-                        },
+                      ListTile(
+                        title: Text('Pick-up from Restaurant'),
+                        leading: Radio(
+                          value: false,
+                          groupValue: isDelivery,
+                          onChanged: (value) {
+                            setState(() {
+                              isDelivery = value as bool;
+                            });
+                          },
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 10.0),
-                    if (isDelivery) ...[
+                      SizedBox(height: 10.0),
+                      if (isDelivery) ...[
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            TextFormField(
+                              onChanged: (value) {
+                                address = value;
+                              },
+                              decoration: InputDecoration(
+                                labelText: 'Enter your address',
+                                hintText: 'Enter your address',
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                            if (address.isEmpty)
+                              Text(
+                                'Address is required',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            SizedBox(height: 10.0),
+                          ],
+                        ),
+                      ],
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           TextFormField(
                             onChanged: (value) {
-                              address = value;
+                              phoneNumber = value;
                             },
                             decoration: InputDecoration(
-                              labelText: 'Enter your address',
-                              hintText: 'Enter your address',
+                              labelText: 'Enter your phone number',
+                              hintText: 'Enter your phone number',
                               border: OutlineInputBorder(),
                             ),
                           ),
-                          if (address.isEmpty)
+                          if (phoneNumber.isEmpty)
                             Text(
-                              'Address is required',
+                              'Phone number is required',
                               style: TextStyle(color: Colors.red),
                             ),
                           SizedBox(height: 10.0),
                         ],
                       ),
-                    ],
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        TextFormField(
-                          onChanged: (value) {
-                            phoneNumber = value;
-                          },
-                          decoration: InputDecoration(
-                            labelText: 'Enter your phone number',
-                            hintText: 'Enter your phone number',
-                            border: OutlineInputBorder(),
-                          ),
+                      TextFormField(
+                        onChanged: (value) {
+                          comments = value;
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Add any comment on your order',
+                          hintText: 'Add any comment on your order',
+                          border: OutlineInputBorder(),
                         ),
-                        if (phoneNumber.isEmpty)
-                          Text(
-                            'Phone number is required',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        SizedBox(height: 10.0),
-                      ],
-                    ),
-                    TextFormField(
-                      onChanged: (value) {
-                        comments = value;
-                      },
-                      decoration: InputDecoration(
-                        labelText: 'Add any comments (optional)',
-                        hintText: 'Add any comments (optional)',
-                        border: OutlineInputBorder(),
                       ),
-                    ),
-                    SizedBox(height: 20.0),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (isDelivery && address.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Address is required for delivery'),
-                            ),
-                          );
-                        } else if (phoneNumber.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Phone number is required'),
-                            ),
-                          );
-                        } else {
-                          confirmOrder(context, isDelivery, address,
-                              phoneNumber, comments);
-                        }
-                      },
-                      child: Text('Proceed to Checkout'),
-                    ),
-                  ],
+                      SizedBox(height: 20.0),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (isDelivery && address.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content:
+                                    Text('Address is required for delivery'),
+                              ),
+                            );
+                          } else if (phoneNumber.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Phone number is required'),
+                              ),
+                            );
+                          } else {
+                            confirmOrder(context, isDelivery, address,
+                                phoneNumber, comments);
+                          }
+                        },
+                        child: Text(
+                          ' Confirm ',
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         );
       },
       isScrollControlled: true,
     );
   }
 
-void confirmOrder(BuildContext context, bool isDelivery, String address,
-    String phoneNumber, String comments) async {
-  try {
-    String? userId = await SharedPreferenceHelper().getUserId();
-    if (userId != null) {
-      // Create a list to store cart items
-      List<Map<String, dynamic>> cartItems = [];
+  void confirmOrder(BuildContext context, bool isDelivery, String address,
+      String phoneNumber, String comments) async {
+    try {
+      String? userId = await SharedPreferenceHelper().getUserId();
+      if (userId != null) {
+        // Create a list to store cart items
+        List<Map<String, dynamic>> cartItems = [];
 
-      // Get cart items from Firestore
-      QuerySnapshot cartSnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .collection('Cart')
-          .get();
+        // Get cart items from Firestore
+        QuerySnapshot cartSnapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .collection('Cart')
+            .get();
 
-      // Add cart items to the list
-      cartSnapshot.docs.forEach((doc) {
-        cartItems.add(doc.data() as Map<String, dynamic>);
-      });
+        // Add cart items to the list
+        cartSnapshot.docs.forEach((doc) {
+          cartItems.add(doc.data() as Map<String, dynamic>);
+        });
 
-      // Confirm the order and clear the cart
-      await DatabaseMethods().confirmOrder(context, userId, isDelivery, address, phoneNumber, comments, cartItems);
+        // Confirm the order and clear the cart
+        await DatabaseMethods().confirmOrder(context, userId, isDelivery,
+            address, phoneNumber, comments, cartItems);
+      }
+    } catch (e) {
+      print("Error confirming order: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('An error occurred while confirming the order'),
+        ),
+      );
     }
-  } catch (e) {
-    print("Error confirming order: $e");
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('An error occurred while confirming the order'),
-      ),
-    );
   }
-}
-
 
 ////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -250,45 +266,70 @@ void confirmOrder(BuildContext context, bool isDelivery, String address,
   }
 
   void removeItemFromCart(String itemId) async {
-  try {
-    String? userId = await SharedPreferenceHelper().getUserId();
-    if (userId != null) {
-      // Retrieve the item from the cart
-      DocumentSnapshot itemSnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .collection('Cart')
-          .doc(itemId)
-          .get();
+    try {
+      String? userId = await SharedPreferenceHelper().getUserId();
+      if (userId != null) {
+        // Retrieve the item from the cart
+        DocumentSnapshot itemSnapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .collection('Cart')
+            .doc(itemId)
+            .get();
 
-      // Convert the item data to a Map
-      Map<String, dynamic> itemData = itemSnapshot.data() as Map<String, dynamic>;
+        // Convert the item data to a Map
+        Map<String, dynamic> itemData =
+            itemSnapshot.data() as Map<String, dynamic>;
 
-      // Add the item to the Orders collection
-      await DatabaseMethods().addOrderItemToOrder(userId, itemData);
+        // Add the item to the Orders collection
+        await DatabaseMethods().addOrderItemToOrder(userId, itemData);
 
-      // Remove the item from the cart
-      await DatabaseMethods().removeCartItem(userId, itemId);
+        // Remove the item from the cart
+        await DatabaseMethods().removeCartItem(userId, itemId);
 
-      // Recalculate the total after removing the item
-      calculateTotal();
-    } else {
-      print("User ID not found.");
+        // Recalculate the total after removing the item
+        calculateTotal();
+      } else {
+        print("User ID not found.");
+      }
+    } catch (e) {
+      print("Error removing item from cart: $e");
     }
-  } catch (e) {
-    print("Error removing item from cart: $e");
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Order Details'),
-      ),
       body: Column(
         children: [
+          Material(
+            elevation: 3.0,
+            borderRadius: BorderRadius.circular(0),
+            color: Color.fromARGB(244, 255, 153, 0),
+            child: Container(
+              padding: EdgeInsets.only(bottom: 10.0, top: 30),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  
+                  Text(
+                    'MY CART',
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 0, 0, 0),
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(width: 15),
+                  Icon(
+                    Icons.shopping_cart,
+                    color: const Color.fromARGB(255, 0, 0, 0),
+                    size: 30,
+                  ),
+                ],
+              ),
+            ),
+          ),
           Expanded(
             child: FutureBuilder<Stream<QuerySnapshot>>(
               future: foodStreamFuture,
@@ -377,13 +418,20 @@ void confirmOrder(BuildContext context, bool isDelivery, String address,
               ],
             ),
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 10),
           ElevatedButton(
             onPressed: () {
               handleCheckout(context);
             },
-            child: Text('Checkout'),
+            child: Text(
+              'Checkout',
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
+            ),
           ),
+          SizedBox(height: 15),
         ],
       ),
     );

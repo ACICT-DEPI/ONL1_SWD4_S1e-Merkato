@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:marwan_be2/Database/pref.dart';
-import 'package:marwan_be2/my-cart/Ordes-list.dart';
+import 'package:marwan_be2/Database/Ordes-list.dart';
 
 class DatabaseMethods {
   // Method to add user details to the database
@@ -152,7 +151,8 @@ Future<void> clearCart(String userId) async {
       // Show a success message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Order confirmed and cart cleared.'),
+          content:
+           Text('Order confirmed '),
         ),
       );
 

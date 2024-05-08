@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:marwan_be2/admin/add_food.dart';
 import 'package:marwan_be2/admin/admin_login.dart';
+import 'package:marwan_be2/admin/home_admin.dart';
+import 'package:marwan_be2/lunch_page.dart';
 import 'package:marwan_be2/pages/bottomNav.dart';
 import 'package:marwan_be2/pages/details.dart';
 import 'package:marwan_be2/pages/home.dart';
@@ -49,7 +51,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: LogIn());
+        home: LunchPage());
   }
 }
 

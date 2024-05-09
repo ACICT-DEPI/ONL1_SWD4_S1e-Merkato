@@ -4,14 +4,14 @@ import 'package:marwan_be2/pages/order.dart';
 import 'package:marwan_be2/pages/profile.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
-class BottomNav extends StatefulWidget {
-  const BottomNav({Key? key}) : super(key: key);
+class Button extends StatefulWidget {
+  const Button({Key? key}) : super(key: key);
 
   @override
-  State<BottomNav> createState() => _BottomNavState();
+  State<Button> createState() => _ButtonState();
 }
 
-class _BottomNavState extends State<BottomNav> {
+class _ButtonState extends State<Button> {
   int currentIndex = 0;
 
   late List<Widget> pages;

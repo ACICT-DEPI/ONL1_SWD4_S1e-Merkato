@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:marwan_be2/Database/database.dart';
 import 'package:marwan_be2/Database/pref.dart';
-import 'package:marwan_be2/pages/bottomNav.dart';
+import 'package:marwan_be2/pages/buttonNav.dart';
 import 'package:marwan_be2/pages/login.dart';
 import 'package:marwan_be2/widget/widget_support.dart';
 import 'package:random_string/random_string.dart';
@@ -54,7 +54,7 @@ class _SingUpState extends State<SingUp> {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => BottomNav()),
+        MaterialPageRoute(builder: (context) => Button()),
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {

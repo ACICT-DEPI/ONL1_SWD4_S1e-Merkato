@@ -191,7 +191,9 @@ class _AdminLoginState extends State<AdminLogin> {
   Route route = MaterialPageRoute(builder: (context) => HomeAdmin());
   Navigator.pushReplacement(context, route);
 }
-  // LoginAdmin() {
+ 
+}
+ // LoginAdmin() {
   //   FirebaseFirestore.instance.collection("Admin").get().then((snapshot) {
   //     snapshot.docs.forEach((result) {
   //       if (result.data()['id'] != usernamecontroller.text.trim()) {
@@ -241,4 +243,3 @@ class _AdminLoginState extends State<AdminLogin> {
   //     });
   //   });
   // }
-}

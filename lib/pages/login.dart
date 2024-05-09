@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:marwan_be2/pages/bottomNav.dart';
+import 'package:marwan_be2/pages/buttonNav.dart';
 import 'package:marwan_be2/pages/forgotpassword.dart';
 import 'package:marwan_be2/pages/singin.dart';
 import 'package:marwan_be2/widget/widget_support.dart';
@@ -22,7 +22,7 @@ class _LogInState extends State<LogIn> {
     if (email.isNotEmpty && password.isNotEmpty) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => BottomNav()),
+        MaterialPageRoute(builder: (context) => Button()),
       );
     } else {
       showDialog(
